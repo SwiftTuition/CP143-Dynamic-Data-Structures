@@ -1,0 +1,4024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Data Structures Practice | Swift Tuition CP143</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+    <!-- CodeMirror for interactive code editing -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            line-height: 1.6;
+        }
+
+        .nav {
+            background: #1e293b;
+            padding: 1rem 2rem;
+            border-bottom: 3px solid #0ea5e9;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .nav-brand img {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0ea5e9;
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.7rem;
+            color: #0ea5e9;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-brand-title {
+            font-size: 1.1rem;
+            color: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #f1f5f9;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            color: #0ea5e9;
+        }
+
+        .nav-menu a.active {
+            color: #10b981;
+            border-bottom: 2px solid #10b981;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .content-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h2 {
+            color: #0ea5e9;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+            border-bottom: 2px solid #0ea5e9;
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            color: #06b6d4;
+            margin-top: 1.25rem;
+            margin-bottom: 0.75rem;
+            font-size: 1.3rem;
+        }
+
+        .info-box {
+            background: rgba(14, 165, 233, 0.1);
+            border-left: 4px solid #0ea5e9;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .warning-box {
+            background: rgba(234, 179, 8, 0.1);
+            border-left: 4px solid #eab308;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .warning-box strong {
+            color: #eab308;
+        }
+
+        .download-section {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.05));
+            border: 2px solid #10b981;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .download-section h3 {
+            color: #10b981;
+            margin-top: 0;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .option-card {
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .option-card:hover {
+            border-color: #0ea5e9;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(14, 165, 233, 0.2);
+        }
+
+        .option-card h4 {
+            color: #0ea5e9;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .option-card ul {
+            color: #cbd5e1;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .option-card li {
+            margin-bottom: 0.5rem;
+        }
+
+        .option-btn {
+            width: 100%;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+        }
+
+        .codespaces-btn {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            color: white;
+        }
+
+        .codespaces-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(14, 165, 233, 0.5);
+        }
+
+        .exercise-list {
+            margin-top: 2rem;
+        }
+
+        .exercise-item {
+            background: #0c1222;
+            border-left: 4px solid #334155;
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .exercise-item:hover {
+            border-left-color: #0ea5e9;
+            background: #1e293b;
+        }
+
+        .exercise-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .exercise-title {
+            color: #0ea5e9;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .difficulty-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .difficulty-easy {
+            background: #142d1f;
+            color: #10b981;
+        }
+
+        .difficulty-medium {
+            background: #2d2410;
+            color: #eab308;
+        }
+
+        .difficulty-hard {
+            background: #2d1414;
+            color: #ef4444;
+        }
+
+        .exercise-description {
+            color: #cbd5e1;
+            margin-bottom: 0.75rem;
+        }
+
+        .exercise-requirements {
+            background: rgba(15, 23, 42, 0.5);
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 0.75rem;
+        }
+
+        .exercise-requirements h5 {
+            color: #06b6d4;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .exercise-requirements ul {
+            margin-left: 1.5rem;
+            color: #94a3b8;
+        }
+
+        .exercise-hints {
+            background: rgba(234, 179, 8, 0.05);
+            border-left: 3px solid #eab308;
+            padding: 0.75rem 1rem;
+            border-radius: 4px;
+            margin-top: 0.75rem;
+        }
+
+        .exercise-hints h5 {
+            color: #eab308;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .exercise-hints ul {
+            margin-left: 1.5rem;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        code {
+            font-family: 'Cascadia Code', monospace;
+            background: rgba(14, 165, 233, 0.1);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: #06b6d4;
+        }
+
+        p {
+            margin: 1rem 0;
+        }
+
+        ul {
+            margin-left: 1.5rem;
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        li {
+            margin: 0.5rem 0;
+        }
+
+        a {
+            color: #0ea5e9;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #06b6d4;
+        }
+
+        .topic-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .topic-linked-list {
+            background: rgba(139, 92, 246, 0.2);
+            color: #a78bfa;
+        }
+
+        .topic-stack {
+            background: rgba(249, 115, 22, 0.2);
+            color: #fb923c;
+        }
+
+        .topic-queue {
+            background: rgba(236, 72, 153, 0.2);
+            color: #f472b6;
+        }
+
+        .topic-tree {
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+        }
+
+        .topic-memory {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+        }
+
+        .solution-section {
+            background: rgba(16, 185, 129, 0.05);
+            border: 2px solid #10b981;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .solution-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .solution-header h4 {
+            color: #10b981;
+            font-size: 1.1rem;
+        }
+
+        .reveal-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .solution-content {
+            display: none;
+        }
+
+        .solution-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .solution-code {
+            background: #1e293b;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+
+        .solution-code pre {
+            margin: 0;
+            font-family: 'Cascadia Code', monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: #e2e8f0;
+        }
+
+        .solution-explanation {
+            background: rgba(14, 165, 233, 0.1);
+            border-left: 4px solid #0ea5e9;
+            padding: 1rem 1.5rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+        }
+
+        .solution-explanation h5 {
+            color: #0ea5e9;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .solution-key-concepts {
+            background: rgba(234, 179, 8, 0.1);
+            border-left: 4px solid #eab308;
+            padding: 1rem 1.5rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+        }
+
+        .solution-key-concepts h5 {
+            color: #eab308;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        /* Interactive Code Playground */
+        .code-playground {
+            background: #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 1rem 0;
+            border: 1px solid #334155;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .playground-header {
+            background: #0f172a;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .playground-title {
+            color: #0ea5e9;
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+
+        .playground-actions {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .run-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .run-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+        }
+
+        .run-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .reset-btn:hover {
+            background: linear-gradient(135deg, #475569 0%, #334155 100%);
+        }
+
+        .loading-indicator {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            color: #0ea5e9;
+            font-size: 0.9rem;
+        }
+
+        .loading-indicator.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid #334155;
+            border-top-color: #0ea5e9;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .playground-editor {
+            background: #0c1222;
+        }
+
+        .CodeMirror {
+            height: auto;
+            min-height: 300px;
+            font-family: 'Cascadia Code', monospace;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .playground-output {
+            background: #0f172a;
+            border-top: 1px solid #334155;
+        }
+
+        .output-header {
+            background: #1e293b;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #334155;
+        }
+
+        .output-content {
+            padding: 1.5rem;
+            min-height: 100px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .output-text {
+            font-family: 'Cascadia Code', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            line-height: 1.6;
+        }
+
+        .output-placeholder {
+            color: #64748b;
+            font-style: italic;
+        }
+
+        .output-success {
+            color: #10b981;
+        }
+
+        .output-error {
+            color: #ef4444;
+        }
+
+        .output-info {
+            color: #0ea5e9;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Dynamic Data Structures</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="theory.html">Theory</a></li>
+            <li><a href="examples.html">Examples</a></li>
+            <li><a href="practice.html" class="active">Practice</a></li>
+            <li><a href="quiz.html">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <section class="content-card">
+            <h1>Practice Exercises</h1>
+            <p>
+                Master dynamic data structures through hands-on practice with linked lists, stacks, queues, and binary trees.
+                Each exercise builds on fundamental concepts and includes test cases to verify your implementation.
+            </p>
+
+            <div class="info-box">
+                <p><strong>How to approach these exercises:</strong></p>
+                <ul>
+                    <li>Read the problem statement and requirements carefully</li>
+                    <li>Draw diagrams of the data structure before coding</li>
+                    <li>Implement helper functions first, then main operations</li>
+                    <li>Test with the provided test cases and edge cases</li>
+                    <li>Use valgrind or similar tools to check for memory leaks</li>
+                    <li>Always free dynamically allocated memory when done</li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <p><strong>⚠️ Memory Management is Critical!</strong></p>
+                <p>
+                    Every <code>malloc()</code> must have a corresponding <code>free()</code>.
+                    Always check if <code>malloc()</code> returns NULL before using the pointer.
+                    Compile with <code>-g -fsanitize=address</code> to catch memory errors.
+                </p>
+            </div>
+
+            <p><strong>Covers:</strong> Lectures 27, 28, 29 | Chapter 12 (Sections 12.1-12.7) | Practical 11</p>
+        </section>
+
+        <!-- Download Section -->
+        <section class="download-section">
+            <h3>📥 Get the Practice Files</h3>
+            <p>Download starter code, test cases, and solutions for all exercises.</p>
+
+            <div class="options-container">
+                <div class="option-card">
+                    <h4>💻 GitHub Codespaces</h4>
+                    <ul>
+                        <li>Pre-configured C development environment</li>
+                        <li>All dependencies and tools installed</li>
+                        <li>Valgrind for memory leak detection</li>
+                        <li>Compile and run directly in browser</li>
+                    </ul>
+                    <a href="https://github.com/SwiftTuition/CP143-Dynamic-Structures-Practice" class="option-btn codespaces-btn" target="_blank">
+                        Open in GitHub →
+                    </a>
+                </div>
+
+                <div class="option-card">
+                    <h4>📦 Download ZIP</h4>
+                    <ul>
+                        <li>Complete exercise package</li>
+                        <li>Starter code with TODOs</li>
+                        <li>Comprehensive test suites</li>
+                        <li>Solution files (separate folder)</li>
+                    </ul>
+                    <button class="option-btn download-btn" onclick="alert('Download link will be provided in final version')">
+                        Download ZIP ↓
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Exercise List -->
+        <section class="content-card">
+            <h2>Exercise List</h2>
+
+            <div class="exercise-list">
+                <!-- Exercise 1: Basic Node Operations -->
+                <div class="exercise-item">
+                    <div class="exercise-header">
+                        <h3 class="exercise-title">Exercise 1: Self-Referential Structures & Node Creation</h3>
+                        <span class="difficulty-badge difficulty-easy">Easy</span>
+                    </div>
+                    <div>
+                        <span class="topic-badge topic-linked-list">Linked List</span>
+                        <span class="topic-badge topic-memory">Memory</span>
+                    </div>
+                    <p class="exercise-description">
+                        Create and manipulate basic self-referential structures. Learn to allocate nodes dynamically,
+                        link them together, and properly free memory.
+                    </p>
+                    <div class="exercise-requirements">
+                        <h5>Requirements:</h5>
+                        <ul>
+                            <li>Define a <code>struct Node</code> with an integer data field and next pointer</li>
+                            <li>Write <code>createNode(int data)</code> that allocates and initializes a new node</li>
+                            <li>Write <code>freeNode(Node* node)</code> to properly deallocate a node</li>
+                            <li>Create a chain of 5 nodes manually and print their values</li>
+                            <li>Free all nodes without memory leaks</li>
+                            <li>Verify with valgrind that no memory leaks occur</li>
+                        </ul>
+                    </div>
+                    <div class="exercise-hints">
+                        <h5>💡 Hints:</h5>
+                        <ul>
+                            <li>Check if <code>malloc()</code> returns NULL before using the pointer</li>
+                            <li>Set the next pointer to NULL when creating the last node</li>
+                            <li>Test: <code>valgrind --leak-check=full ./program</code></li>
+                        </ul>
+                    </div>
+
+                    <!-- Solution Section -->
+                    <div class="solution-section">
+                        <div class="solution-header">
+                            <h4>📝 Solution</h4>
+                            <button class="reveal-btn" id="btn-1" onclick="toggleSolution(1)">👁️ Reveal Solution</button>
+                        </div>
+                        <div class="solution-content" id="solution-1">
+                            <div class="code-playground" id="playground1">
+                                <div class="playground-header">
+                                    <div class="playground-title">✨ Interactive Solution - Exercise 1</div>
+                                    <div class="playground-actions">
+                                        <button class="run-btn" onclick="runCode('playground1')">▶ Run Code</button>
+                                        <button class="reset-btn" onclick="resetCode('playground1')">↻ Reset</button>
+                                        <div class="loading-indicator" id="loading1">
+                                            <div class="spinner"></div>
+                                            <span>Compiling...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="playground-editor">
+                                    <textarea id="editor1">#include <stdio.h>
+#include <stdlib.h>
+
+// Define the self-referential structure
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+// Function to create a new node
+Node* createNode(int data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+
+    if (newNode == NULL) {
+        printf("Error: Memory allocation failed!\n");
+        return NULL;
+    }
+
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Function to free a single node
+void freeNode(Node* node) {
+    if (node != NULL) {
+        free(node);
+    }
+}
+
+int main() {
+    printf("Creating and linking 5 nodes...\n\n");
+
+    // Create 5 nodes
+    Node* node1 = createNode(10);
+    Node* node2 = createNode(20);
+    Node* node3 = createNode(30);
+    Node* node4 = createNode(40);
+    Node* node5 = createNode(50);
+
+    // Check if all allocations succeeded
+    if (!node1 || !node2 || !node3 || !node4 || !node5) {
+        printf("Memory allocation failed!\n");
+        return 1;
+    }
+
+    // Link the nodes together
+    node1->next = node2;
+    node2->next = node3;
+    node3->next = node4;
+    node4->next = node5;
+    // node5->next is already NULL
+
+    // Traverse and print
+    printf("Traversing the linked chain:\n");
+    Node* current = node1;
+    int position = 1;
+
+    while (current != NULL) {
+        printf("Node %d: data=%d\n", position, current->data);
+        current = current->next;
+        position++;
+    }
+
+    // Free all nodes
+    printf("\nFreeing all nodes...\n");
+    freeNode(node1);
+    freeNode(node2);
+    freeNode(node3);
+    freeNode(node4);
+    freeNode(node5);
+
+    printf("All nodes freed successfully!\n");
+
+    return 0;
+}</textarea>
+                                </div>
+                                <div class="playground-output">
+                                    <div class="output-header">📤 Output</div>
+                                    <div class="output-content">
+                                        <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="solution-explanation">
+                                <h5>📖 Explanation:</h5>
+                                <p><strong>Step-by-step breakdown:</strong></p>
+                                <ul>
+                                    <li><strong>Structure definition:</strong> The <code>struct Node</code> contains an int and a pointer to another Node</li>
+                                    <li><strong>createNode():</strong> Allocates memory using malloc, checks for NULL, initializes fields</li>
+                                    <li><strong>Linking:</strong> Each node's <code>next</code> pointer is set to point to the next node</li>
+                                    <li><strong>Traversal:</strong> Start at first node, follow <code>next</code> pointers until reaching NULL</li>
+                                    <li><strong>Memory cleanup:</strong> Each allocated node must be individually freed</li>
+                                </ul>
+                            </div>
+
+                            <div class="solution-key-concepts">
+                                <h5>🔑 Key Concepts:</h5>
+                                <ul>
+                                    <li><strong>malloc():</strong> Returns pointer to allocated memory on heap, or NULL if failed</li>
+                                    <li><strong>sizeof(Node):</strong> Calculates exact bytes needed for the structure</li>
+                                    <li><strong>NULL checking:</strong> Critical for robust code - always verify malloc succeeded</li>
+                                    <li><strong>Pointer dereferencing:</strong> Use <code>-&gt;</code> operator to access struct members via pointer</li>
+                                    <li><strong>Memory leaks:</strong> Forgetting to free causes memory leaks - use valgrind to detect</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exercise 2: Linked List Basics -->
+                <div class="exercise-item">
+                    <div class="exercise-header">
+                        <h3 class="exercise-title">Exercise 2: Linked List - Insert & Display</h3>
+                        <span class="difficulty-badge difficulty-easy">Easy</span>
+                    </div>
+                    <div>
+                        <span class="topic-badge topic-linked-list">Linked List</span>
+                    </div>
+                    <p class="exercise-description">
+                        Implement basic linked list operations: inserting at the beginning and displaying all elements.
+                    </p>
+                    <div class="exercise-requirements">
+                        <h5>Requirements:</h5>
+                        <ul>
+                            <li>Implement <code>insertAtBeginning(Node** head, int data)</code></li>
+                            <li>Implement <code>displayList(Node* head)</code></li>
+                            <li>Implement <code>freeList(Node** head)</code> to free entire list</li>
+                            <li>Test by inserting numbers: 10, 20, 30, 40, 50</li>
+                            <li>Display should show: 50 → 40 → 30 → 20 → 10 → NULL</li>
+                        </ul>
+                    </div>
+                    <div class="exercise-hints">
+                        <h5>💡 Hints:</h5>
+                        <ul>
+                            <li>Use a double pointer (<code>Node**</code>) to modify the head pointer</li>
+                            <li>When inserting at beginning: new node's next = current head</li>
+                            <li>Don't forget to update the head pointer to the new node</li>
+                        </ul>
+                    </div>
+
+                    <!-- Solution Section -->
+                    <div class="solution-section">
+                        <div class="solution-header">
+                            <h4>📝 Solution</h4>
+                            <button class="reveal-btn" id="btn-2" onclick="toggleSolution(2)">👁️ Reveal Solution</button>
+                        </div>
+                        <div class="solution-content" id="solution-2">
+                            <div class="code-playground" id="playground2">
+                                <div class="playground-header">
+                                    <div class="playground-title">✨ Interactive Solution - Exercise 2</div>
+                                    <div class="playground-actions">
+                                        <button class="run-btn" onclick="runCode('playground2')">▶ Run Code</button>
+                                        <button class="reset-btn" onclick="resetCode('playground2')">↻ Reset</button>
+                                        <div class="loading-indicator" id="loading2">
+                                            <div class="spinner"></div>
+                                            <span>Compiling...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="playground-editor">
+                                    <textarea id="editor2">#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+// Insert at beginning - O(1)
+void insertAtBeginning(Node** head, int data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+
+    if (newNode == NULL) {
+        printf("Error: Memory allocation failed!\n");
+        return;
+    }
+
+    newNode->data = data;
+    newNode->next = *head;  // Point to current head
+    *head = newNode;         // Update head to new node
+}
+
+// Display list - O(n)
+void displayList(Node* head) {
+    if (head == NULL) {
+        printf("List: (empty)\n");
+        return;
+    }
+
+    printf("List: ");
+    Node* current = head;
+    while (current != NULL) {
+        printf("%d", current->data);
+        if (current->next != NULL) {
+            printf(" -> ");
+        }
+        current = current->next;
+    }
+    printf(" -> NULL\n");
+}
+
+// Free entire list - O(n)
+void freeList(Node** head) {
+    Node* current = *head;
+    Node* next;
+
+    while (current != NULL) {
+        next = current->next;
+        free(current);
+        current = next;
+    }
+
+    *head = NULL;
+}
+
+int main() {
+    Node* head = NULL;
+
+    printf("Inserting numbers: 10, 20, 30, 40, 50\n\n");
+
+    // Insert 5 numbers
+    insertAtBeginning(&head, 10);
+    displayList(head);
+
+    insertAtBeginning(&head, 20);
+    displayList(head);
+
+    insertAtBeginning(&head, 30);
+    displayList(head);
+
+    insertAtBeginning(&head, 40);
+    displayList(head);
+
+    insertAtBeginning(&head, 50);
+    displayList(head);
+
+    printf("\nNote: Elements appear in reverse order (LIFO behavior)\n");
+    printf("This is because we're always inserting at the beginning!\n");
+
+    // Free memory
+    printf("\nFreeing list...\n");
+    freeList(&head);
+    displayList(head);
+
+    return 0;
+}</textarea>
+                                </div>
+                                <div class="playground-output">
+                                    <div class="output-header">📤 Output</div>
+                                    <div class="output-content">
+                                        <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="solution-explanation">
+                                <h5>📖 Explanation:</h5>
+                                <ul>
+                                    <li><strong>Double pointer (Node**):</strong> Allows the function to modify the actual head pointer, not just a copy</li>
+                                    <li><strong>insertAtBeginning logic:</strong> Create new node → point its next to current head → update head to new node</li>
+                                    <li><strong>Why reverse order?:</strong> Last inserted becomes the new head, so order reverses</li>
+                                    <li><strong>freeList:</strong> Must traverse entire list and free each node individually</li>
+                                    <li><strong>Time complexity:</strong> Insert is O(1) constant time - very fast!</li>
+                                </ul>
+                            </div>
+
+                            <div class="solution-key-concepts">
+                                <h5>🔑 Key Concepts:</h5>
+                                <ul>
+                                    <li><strong>Pointer to pointer:</strong> <code>Node**</code> lets us modify what the pointer points to</li>
+                                    <li><strong>Dereferencing:</strong> <code>*head</code> accesses the actual head pointer</li>
+                                    <li><strong>O(1) insertion:</strong> Only need to update 2 pointers regardless of list size</li>
+                                    <li><strong>Memory management:</strong> Every malloc must have a corresponding free</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exercise 3: Linked List Advanced Operations -->
+                <div class="exercise-item">
+                    <div class="exercise-header">
+                        <h3 class="exercise-title">Exercise 3: Linked List - Complete Implementation</h3>
+                        <span class="difficulty-badge difficulty-medium">Medium</span>
+                    </div>
+                    <div>
+                        <span class="topic-badge topic-linked-list">Linked List</span>
+                    </div>
+                    <p class="exercise-description">
+                        Build a complete linked list with insertion, deletion, searching, and utility functions.
+                    </p>
+                    <div class="exercise-requirements">
+                        <h5>Requirements:</h5>
+                        <ul>
+                            <li>Implement <code>insertAtEnd(Node** head, int data)</code></li>
+                            <li>Implement <code>insertAtPosition(Node** head, int data, int position)</code></li>
+                            <li>Implement <code>deleteNode(Node** head, int data)</code></li>
+                            <li>Implement <code>search(Node* head, int data)</code> - returns position or -1</li>
+                            <li>Implement <code>getLength(Node* head)</code></li>
+                            <li>Implement <code>reverseList(Node** head)</code></li>
+                            <li>Create a menu-driven program to test all operations</li>
+                        </ul>
+                    </div>
+                    <div class="exercise-hints">
+                        <h5>💡 Hints:</h5>
+                        <ul>
+                            <li>For insertAtEnd: traverse to the last node first</li>
+                            <li>For deletion: handle cases where node is at head, middle, or end</li>
+                            <li>For reverseList: use three pointers (prev, current, next)</li>
+                        </ul>
+                    </div>
+
+                    <!-- Solution Section -->
+                    <div class="solution-section">
+                        <div class="solution-header">
+                            <h4>📝 Solution</h4>
+                            <button class="reveal-btn" id="btn-3" onclick="toggleSolution(3)">👁️ Reveal Solution</button>
+                        </div>
+                        <div class="solution-content" id="solution-3">
+                            <div class="code-playground" id="playground3">
+                                <div class="playground-header">
+                                    <div class="playground-title">✨ Interactive Solution - Exercise 3</div>
+                                    <div class="playground-actions">
+                                        <button class="run-btn" onclick="runCode('playground3')">▶ Run Code</button>
+                                        <button class="reset-btn" onclick="resetCode('playground3')">↻ Reset</button>
+                                        <div class="loading-indicator" id="loading3">
+                                            <div class="spinner"></div>
+                                            <span>Compiling...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="playground-editor">
+                                    <textarea id="editor3">#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+void insertAtEnd(Node** head, int data) {
+    Node* newNode = malloc(sizeof(Node));
+    newNode->data = data;
+    newNode->next = NULL;
+
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+
+    Node* current = *head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = newNode;
+}
+
+void deleteNode(Node** head, int data) {
+    if (*head == NULL) return;
+
+    if ((*head)->data == data) {
+        Node* temp = *head;
+        *head = (*head)->next;
+        free(temp);
+        printf("Deleted %d\n", data);
+        return;
+    }
+
+    Node* current = *head;
+    while (current->next != NULL && current->next->data != data) {
+        current = current->next;
+    }
+
+    if (current->next != NULL) {
+        Node* temp = current->next;
+        current->next = temp->next;
+        free(temp);
+        printf("Deleted %d\n", data);
+    }
+}
+
+int search(Node* head, int data) {
+    int position = 0;
+    while (head != NULL) {
+        if (head->data == data) return position;
+        head = head->next;
+        position++;
+    }
+    return -1;
+}
+
+void reverseList(Node** head) {
+    Node *prev = NULL, *current = *head, *next = NULL;
+
+    while (current != NULL) {
+        next = current->next;
+        current->next = prev;
+        prev = current;
+        current = next;
+    }
+    *head = prev;
+}
+
+void displayList(Node* head) {
+    if (head == NULL) {
+        printf("List: (empty)\n");
+        return;
+    }
+
+    printf("List: ");
+    while (head != NULL) {
+        printf("%d", head->data);
+        if (head->next != NULL) printf(" -> ");
+        head = head->next;
+    }
+    printf("\n");
+}
+
+int main() {
+    Node* head = NULL;
+
+    printf("=== Complete Linked List Demo ===\n\n");
+
+    // Insert at end
+    printf("Inserting: 10, 20, 30, 40\n");
+    insertAtEnd(&head, 10);
+    insertAtEnd(&head, 20);
+    insertAtEnd(&head, 30);
+    insertAtEnd(&head, 40);
+    displayList(head);
+
+    // Search
+    printf("\nSearching for 30: ");
+    int pos = search(head, 30);
+    printf("Found at position %d\n", pos);
+
+    // Delete
+    printf("\nDeleting 20:\n");
+    deleteNode(&head, 20);
+    displayList(head);
+
+    // Reverse
+    printf("\nReversing list:\n");
+    reverseList(&head);
+    displayList(head);
+
+    return 0;
+}</textarea>
+                                </div>
+                                <div class="playground-output">
+                                    <div class="output-header">📤 Output</div>
+                                    <div class="output-content">
+                                        <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="solution-key-concepts">
+                                <h5>🔑 Key Concepts:</h5>
+                                <ul>
+                                    <li><strong>insertAtEnd:</strong> Must traverse entire list - O(n) time (use tail pointer for O(1))</li>
+                                    <li><strong>deleteNode:</strong> Handle 3 cases: head, middle, not found</li>
+                                    <li><strong>reverseList:</strong> Three-pointer technique - prev, current, next</li>
+                                    <li><strong>search:</strong> Linear search through list returns position index</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exercise 4: Stack Implementation -->
+                <div class="exercise-item">
+                    <div class="exercise-header">
+                        <h3 class="exercise-title">Exercise 4: Stack - LIFO Implementation</h3>
+                        <span class="difficulty-badge difficulty-medium">Medium</span>
+                    </div>
+                    <div>
+                        <span class="topic-badge topic-stack">Stack</span>
+                    </div>
+                    <p class="exercise-description">
+                        Implement a stack using a linked list with push, pop, peek, and isEmpty operations.
+                    </p>
+                    <div class="exercise-requirements">
+                        <h5>Requirements:</h5>
+                        <ul>
+                            <li>Implement <code>push(Node** top, int data)</code></li>
+                            <li>Implement <code>pop(Node** top)</code> - returns popped value or error</li>
+                            <li>Implement <code>peek(Node* top)</code> - returns top value without removing</li>
+                            <li>Implement <code>isEmpty(Node* top)</code></li>
+                            <li>Implement <code>displayStack(Node* top)</code></li>
+                            <li>Test: push 5 values, pop 2, peek, push 3 more, display</li>
+                            <li>Handle stack underflow gracefully</li>
+                        </ul>
+                    </div>
+                    <div class="exercise-hints">
+                        <h5>💡 Hints:</h5>
+                        <ul>
+                            <li>Stack operations only work at the top (head of linked list)</li>
+                            <li>Push is like insertAtBeginning</li>
+                            <li>Pop removes and returns the head node's data</li>
+                        </ul>
+                    </div>
+
+                    <!-- Solution Section -->
+                    <div class="solution-section">
+                        <div class="solution-header">
+                            <h4>📝 Solution</h4>
+                            <button class="reveal-btn" id="btn-4" onclick="toggleSolution(4)">👁️ Reveal Solution</button>
+                        </div>
+                        <div class="solution-content" id="solution-4">
+                            <div class="code-playground" id="playground4">
+                                <div class="playground-header">
+                                    <div class="playground-title">✨ Interactive Solution - Exercise 4</div>
+                                    <div class="playground-actions">
+                                        <button class="run-btn" onclick="runCode('playground4')">▶ Run Code</button>
+                                        <button class="reset-btn" onclick="resetCode('playground4')">↻ Reset</button>
+                                        <div class="loading-indicator" id="loading4">
+                                            <div class="spinner"></div>
+                                            <span>Compiling...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="playground-editor">
+                                    <textarea id="editor4">#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+void push(Node** top, int data) {
+    Node* newNode = malloc(sizeof(Node));
+    if (newNode == NULL) {
+        printf("Stack overflow!\n");
+        return;
+    }
+    newNode->data = data;
+    newNode->next = *top;
+    *top = newNode;
+    printf("Pushed %d\n", data);
+}
+
+int pop(Node** top) {
+    if (*top == NULL) {
+        printf("Stack underflow!\n");
+        return -1;
+    }
+    Node* temp = *top;
+    int popped = temp->data;
+    *top = (*top)->next;
+    free(temp);
+    printf("Popped %d\n", popped);
+    return popped;
+}
+
+int peek(Node* top) {
+    if (top == NULL) return -1;
+    return top->data;
+}
+
+int isEmpty(Node* top) {
+    return top == NULL;
+}
+
+void displayStack(Node* top) {
+    if (top == NULL) {
+        printf("Stack: (empty)\n");
+        return;
+    }
+    printf("Stack (top to bottom): ");
+    while (top != NULL) {
+        printf("%d ", top->data);
+        top = top->next;
+    }
+    printf("\n");
+}
+
+int main() {
+    Node* stack = NULL;
+
+    printf("=== Stack (LIFO) Demo ===\n\n");
+
+    // Push 5 values
+    printf("--- Pushing 5 values ---\n");
+    push(&stack, 10);
+    push(&stack, 20);
+    push(&stack, 30);
+    push(&stack, 40);
+    push(&stack, 50);
+    displayStack(stack);
+
+    // Pop 2
+    printf("\n--- Popping 2 values ---\n");
+    pop(&stack);
+    pop(&stack);
+    displayStack(stack);
+
+    // Peek
+    printf("\n--- Peek operation ---\n");
+    printf("Top element: %d\n", peek(stack));
+    displayStack(stack);
+
+    // Push 3 more
+    printf("\n--- Pushing 3 more ---\n");
+    push(&stack, 60);
+    push(&stack, 70);
+    push(&stack, 80);
+    displayStack(stack);
+
+    printf("\nStack empty? %s\n", isEmpty(stack) ? "Yes" : "No");
+
+    return 0;
+}</textarea>
+                                </div>
+                                <div class="playground-output">
+                                    <div class="output-header">📤 Output</div>
+                                    <div class="output-content">
+                                        <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="solution-key-concepts">
+                                <h5>🔑 Key Concepts:</h5>
+                                <ul>
+                                    <li><strong>LIFO:</strong> Last In, First Out - all operations at top</li>
+                                    <li><strong>O(1) operations:</strong> Push, pop, peek all constant time</li>
+                                    <li><strong>Top pointer:</strong> Only need to track the top of stack</li>
+                                    <li><strong>Error handling:</strong> Check for overflow (malloc fail) and underflow (empty)</li>
+                                    <li><strong>Applications:</strong> Function calls, undo/redo, expression evaluation</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exercise 5: Stack Application - Balanced Parentheses -->
+                <div class="exercise-item">
+                    <div class="exercise-header">
+                        <h3 class="exercise-title">Exercise 5: Stack Application - Balanced Parentheses</h3>
+                        <span class="difficulty-badge difficulty-medium">Medium</span>
+                    </div>
+                    <div>
+                        <span class="topic-badge topic-stack">Stack</span>
+                    </div>
+                    <p class="exercise-description">
+                        Use a stack to check if parentheses, brackets, and braces are balanced in an expression.
+                    </p>
+                    <div class="exercise-requirements">
+                        <h5>Requirements:</h5>
+                        <ul>
+                            <li>Implement <code>isBalanced(char* expression)</code> using a stack</li>
+                            <li>Support three types: <code>()</code>, <code>[]</code>, <code>{}</code></li>
+                            <li>Return 1 if balanced, 0 otherwise</li>
+                            <li>Test cases:
+                                <ul>
+                                    <li>Valid: <code>"{[()]}"</code>, <code>"()[]"</code>, <code>"{}"</code></li>
+                                    <li>Invalid: <code>"{[(]}"</code>, <code>"((("</code>, <code>"}}}"</code></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="exercise-hints">
+                        <h5>💡 Hints:</h5>
+                        <ul>
+                            <li>Push opening brackets onto stack</li>
+                            <li>When closing bracket found, pop and check if it matches</li>
+                            <li>At end, stack should be empty for balanced expression</li>
+                        </ul>
+                    </div>
+
+                    <!-- Solution Section -->
+                    <div class="solution-section">
+                        <div class="solution-header">
+                            <h4>📝 Solution</h4>
+                            <button class="reveal-btn" id="btn-5" onclick="toggleSolution(5)">👁️ Reveal Solution</button>
+                        </div>
+                        <div class="solution-content" id="solution-5">
+                            <div class="code-playground" id="playground5">
+                                <div class="playground-header">
+                                    <div class="playground-title">✨ Interactive Solution - Exercise 5</div>
+                                    <div class="playground-actions">
+                                        <button class="run-btn" onclick="runCode('playground5')">▶ Run Code</button>
+                                        <button class="reset-btn" onclick="resetCode('playground5')">↻ Reset</button>
+                                        <div class="loading-indicator" id="loading5">
+                                            <div class="spinner"></div>
+                                            <span>Compiling...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="playground-editor">
+                                    <textarea id="editor5">#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    char data;
+    struct Node* next;
+} Node;
+
+void push(Node** top, char data) {
+    Node* newNode = malloc(sizeof(Node));
+    newNode->data = data;
+    newNode->next = *top;
+    *top = newNode;
+}
+
+char pop(Node** top) {
+    if (*top == NULL) return '\0';
+    Node* temp = *top;
+    char popped = temp->data;
+    *top = (*top)->next;
+    free(temp);
+    return popped;
+}
+
+int isMatchingPair(char open, char close) {
+    return (open == '(' && close == ')') ||
+           (open == '[' && close == ']') ||
+           (open == '{' && close == '}');
+}
+
+int isBalanced(char* expr) {
+    Node* stack = NULL;
+
+    for (int i = 0; expr[i] != '\0'; i++) {
+        char c = expr[i];
+
+        if (c == '(' || c == '[' || c == '{') {
+            push(&stack, c);
+        }
+        else if (c == ')' || c == ']' || c == '}') {
+            if (stack == NULL) return 0;
+            char top = pop(&stack);
+            if (!isMatchingPair(top, c)) return 0;
+        }
+    }
+
+    int result = (stack == NULL);
+    while (stack != NULL) pop(&stack);
+    return result;
+}
+
+int main() {
+    printf("=== Balanced Parentheses Checker ===\n\n");
+
+    char* tests[] = {"{[()]}", "()[]", "{}", "(((", "}}}", "{[(]}", "({[}])"};
+    int numTests = 7;
+
+    for (int i = 0; i < numTests; i++) {
+        printf("%10s: %s\n", tests[i],
+               isBalanced(tests[i]) ? "✓ Balanced" : "✗ Not Balanced");
+    }
+
+    return 0;
+}</textarea>
+                                </div>
+                                <div class="playground-output">
+                                    <div class="output-header">📤 Output</div>
+                                    <div class="output-content">
+                                        <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="solution-key-concepts">
+                                <h5>🔑 Key Concepts:</h5>
+                                <ul>
+                                    <li><strong>Stack for matching:</strong> Push opening brackets, pop to match closing</li>
+                                    <li><strong>Empty at end:</strong> All brackets matched if stack empty</li>
+                                    <li><strong>Early termination:</strong> Return false immediately on mismatch</li>
+                                    <li><strong>Applications:</strong> Compiler syntax checking, HTML/XML validation</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exercise 6: Queue Implementation -->
+                <div class="exercise-item">
+                    <div class="exercise-header">
+                        <h3 class="exercise-title">Exercise 6: Queue - FIFO Implementation</h3>
+                        <span class="difficulty-badge difficulty-medium">Medium</span>
+                    </div>
+                    <div>
+                        <span class="topic-badge topic-queue">Queue</span>
+                    </div>
+                    <p class="exercise-description">
+                        Implement a queue using a linked list with enqueue, dequeue, and utility operations.
+                    </p>
+                    <div class="exercise-requirements">
+                        <h5>Requirements:</h5>
+                        <ul>
+                            <li>Define a Queue structure with head and tail pointers</li>
+                            <li>Implement <code>enqueue(Queue* q, int data)</code></li>
+                            <li>Implement <code>dequeue(Queue* q)</code> - returns dequeued value</li>
+                            <li>Implement <code>front(Queue* q)</code> - returns front value without removing</li>
+                            <li>Implement <code>isEmpty(Queue* q)</code></li>
+                            <li>Implement <code>displayQueue(Queue* q)</code></li>
+                            <li>Test: enqueue 1-5, dequeue 2, enqueue 6-7, display</li>
+                        </ul>
+                    </div>
+                    <div class="exercise-hints">
+                        <h5>💡 Hints:</h5>
+                        <ul>
+                            <li>Enqueue adds at tail (rear), dequeue removes from head (front)</li>
+                            <li>Keep both head and tail pointers for O(1) operations</li>
+                            <li>Handle empty queue case carefully</li>
+                        </ul>
+                    </div>
+
+                    <!-- Solution Section -->
+                    <div class="solution-section">
+                        <div class="solution-header">
+                            <h4>📝 Solution</h4>
+                            <button class="reveal-btn" id="btn-6" onclick="toggleSolution(6)">👁️ Reveal Solution</button>
+                        </div>
+                        <div class="solution-content" id="solution-6">
+                            <div class="code-playground" id="playground6">
+                                <div class="playground-header">
+                                    <div class="playground-title">✨ Interactive Solution - Exercise 6</div>
+                                    <div class="playground-actions">
+                                        <button class="run-btn" onclick="runCode('playground6')">▶ Run Code</button>
+                                        <button class="reset-btn" onclick="resetCode('playground6')">↻ Reset</button>
+                                        <div class="loading-indicator" id="loading6">
+                                            <div class="spinner"></div>
+                                            <span>Compiling...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="playground-editor">
+                                    <textarea id="editor6">#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+typedef struct Queue {
+    Node* head;
+    Node* tail;
+} Queue;
+
+void enqueue(Queue* q, int data) {
+    Node* newNode = malloc(sizeof(Node));
+    newNode->data = data;
+    newNode->next = NULL;
+
+    if (q->tail == NULL) {
+        q->head = q->tail = newNode;
+    } else {
+        q->tail->next = newNode;
+        q->tail = newNode;
+    }
+    printf("Enqueued %d\n", data);
+}
+
+int dequeue(Queue* q) {
+    if (q->head == NULL) {
+        printf("Queue underflow!\n");
+        return -1;
+    }
+
+    Node* temp = q->head;
+    int data = temp->data;
+    q->head = q->head->next;
+
+    if (q->head == NULL) {
+        q->tail = NULL;
+    }
+
+    free(temp);
+    printf("Dequeued %d\n", data);
+    return data;
+}
+
+void displayQueue(Queue* q) {
+    if (q->head == NULL) {
+        printf("Queue: (empty)\n");
+        return;
+    }
+
+    printf("Queue (front to rear): ");
+    Node* current = q->head;
+    while (current != NULL) {
+        printf("%d ", current->data);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+int main() {
+    Queue q = {NULL, NULL};
+
+    printf("=== Queue (FIFO) Demo ===\n\n");
+
+    printf("Enqueuing 1-5:\n");
+    for (int i = 1; i <= 5; i++) {
+        enqueue(&q, i);
+    }
+    displayQueue(&q);
+
+    printf("\nDequeuing 2 items:\n");
+    dequeue(&q);
+    dequeue(&q);
+    displayQueue(&q);
+
+    printf("\nEnqueuing 6-7:\n");
+    enqueue(&q, 6);
+    enqueue(&q, 7);
+    displayQueue(&q);
+
+    return 0;
+}</textarea>
+                                </div>
+                                <div class="playground-output">
+                                    <div class="output-header">📤 Output</div>
+                                    <div class="output-content">
+                                        <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="solution-key-concepts">
+                                <h5>🔑 Key Concepts:</h5>
+                                <ul>
+                                    <li><strong>FIFO:</strong> First In, First Out - ensures fairness</li>
+                                    <li><strong>Two pointers:</strong> Head and tail for O(1) operations</li>
+                                    <li><strong>Empty check:</strong> When dequeue makes head NULL, set tail NULL too</li>
+                                    <li><strong>Applications:</strong> Task scheduling, BFS, print spooler</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exercise 7: Queue Application - Process Scheduler -->
+                <div class="exercise-item">
+                    <div class="exercise-header">
+                        <h3 class="exercise-title">Exercise 7: Queue Application - Simple Process Scheduler</h3>
+                        <span class="difficulty-badge difficulty-medium">Medium</span>
+                    </div>
+                    <div>
+                        <span class="topic-badge topic-queue">Queue</span>
+                    </div>
+                    <p class="exercise-description">
+                        Simulate a simple process scheduler using a queue. Processes arrive and are executed in FIFO order.
+                    </p>
+                    <div class="exercise-requirements">
+                        <h5>Requirements:</h5>
+                        <ul>
+                            <li>Create a <code>struct Process { int pid; char name[30]; int duration; }</code></li>
+                            <li>Modify queue to store Process structures instead of integers</li>
+                            <li>Implement <code>addProcess(Queue* q, Process p)</code></li>
+                            <li>Implement <code>executeProcess(Queue* q)</code> - dequeues and "executes"</li>
+                            <li>Simulate: add 5 processes, execute all, showing execution order</li>
+                            <li>Display total execution time</li>
+                        </ul>
+                    </div>
+                    <div class="exercise-hints">
+                        <h5>💡 Hints:</h5>
+                        <ul>
+                            <li>Modify Node structure to store Process instead of int</li>
+                            <li>Use sleep() or just print statements to simulate execution</li>
+                            <li>Track cumulative time as processes execute</li>
+                        </ul>
+                    </div>
+
+                    <!-- Solution Section -->
+                    <div class="solution-section">
+                        <div class="solution-header">
+                            <h4>📝 Solution</h4>
+                            <button class="reveal-btn" id="btn-7" onclick="toggleSolution(7)">👁️ Reveal Solution</button>
+                        </div>
+                        <div class="solution-content" id="solution-7">
+                            <div class="code-playground" id="playground7">
+                                <div class="playground-header">
+                                    <div class="playground-title">✨ Interactive Solution - Exercise 7</div>
+                                    <div class="playground-actions">
+                                        <button class="run-btn" onclick="runCode('playground7')">▶ Run Code</button>
+                                        <button class="reset-btn" onclick="resetCode('playground7')">↻ Reset</button>
+                                        <div class="loading-indicator" id="loading7">
+                                            <div class="spinner"></div>
+                                            <span>Compiling...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="playground-editor">
+                                    <textarea id="editor7">#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Process {
+    int pid;
+    char name[30];
+    int duration;
+} Process;
+
+typedef struct PNode {
+    Process data;
+    struct PNode* next;
+} PNode;
+
+typedef struct ProcessQueue {
+    PNode* head;
+    PNode* tail;
+} ProcessQueue;
+
+void addProcess(ProcessQueue* q, int pid, char* name, int duration) {
+    PNode* newNode = malloc(sizeof(PNode));
+    newNode->data.pid = pid;
+    strcpy(newNode->data.name, name);
+    newNode->data.duration = duration;
+    newNode->next = NULL;
+
+    if (q->tail == NULL) {
+        q->head = q->tail = newNode;
+    } else {
+        q->tail->next = newNode;
+        q->tail = newNode;
+    }
+    printf("Added: %s (PID:%d, %ds)\n", name, pid, duration);
+}
+
+void executeAll(ProcessQueue* q) {
+    int totalTime = 0;
+    printf("\n--- Executing Processes ---\n");
+
+    while (q->head != NULL) {
+        PNode* temp = q->head;
+        Process p = temp->data;
+        printf("Executing: %s (PID:%d) - %ds\n",
+               p.name, p.pid, p.duration);
+        totalTime += p.duration;
+        q->head = q->head->next;
+        free(temp);
+    }
+
+    q->tail = NULL;
+    printf("\nTotal execution time: %ds\n", totalTime);
+}
+
+int main() {
+    ProcessQueue q = {NULL, NULL};
+
+    printf("=== Process Scheduler Demo ===\n\n");
+
+    addProcess(&q, 101, "Browser", 5);
+    addProcess(&q, 102, "Editor", 3);
+    addProcess(&q, 103, "Compiler", 8);
+    addProcess(&q, 104, "Database", 4);
+    addProcess(&q, 105, "Terminal", 2);
+
+    executeAll(&q);
+
+    return 0;
+}</textarea>
+                                </div>
+                                <div class="playground-output">
+                                    <div class="output-header">📤 Output</div>
+                                    <div class="output-content">
+                                        <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="solution-key-concepts">
+                                <h5>🔑 Key Concepts:</h5>
+                                <ul>
+                                    <li><strong>Custom types:</strong> Queue works with any data type</li>
+                                    <li><strong>FIFO scheduling:</strong> Fair process execution</li>
+                                    <li><strong>Real-world:</strong> Similar to OS schedulers</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exercise 8: Binary Search Tree - Basic -->
+                <div class="exercise-item">
+                    <div class="exercise-header">
+                        <h3 class="exercise-title">Exercise 8: Binary Search Tree - Insert & Traversal</h3>
+                        <span class="difficulty-badge difficulty-medium">Medium</span>
+                    </div>
+                    <div>
+                        <span class="topic-badge topic-tree">Tree</span>
+                    </div>
+                    <p class="exercise-description">
+                        Implement a binary search tree with insertion and all three traversal methods.
+                    </p>
+                    <div class="exercise-requirements">
+                        <h5>Requirements:</h5>
+                        <ul>
+                            <li>Define <code>struct TreeNode { int data; TreeNode *left, *right; }</code></li>
+                            <li>Implement <code>insert(TreeNode** root, int data)</code> recursively</li>
+                            <li>Implement <code>inorder(TreeNode* root)</code> - left, root, right</li>
+                            <li>Implement <code>preorder(TreeNode* root)</code> - root, left, right</li>
+                            <li>Implement <code>postorder(TreeNode* root)</code> - left, right, root</li>
+                            <li>Test: insert 50, 30, 70, 20, 40, 60, 80</li>
+                            <li>Display all three traversals</li>
+                        </ul>
+                    </div>
+                    <div class="exercise-hints">
+                        <h5>💡 Hints:</h5>
+                        <ul>
+                            <li>For BST: left child < parent < right child</li>
+                            <li>Use recursion for both insertion and traversal</li>
+                            <li>Inorder traversal of BST gives sorted order</li>
+                        </ul>
+                    </div>
+
+                    <!-- Solution Section -->
+                    <div class="solution-section">
+                        <div class="solution-header">
+                            <h4>📝 Solution</h4>
+                            <button class="reveal-btn" id="btn-8" onclick="toggleSolution(8)">👁️ Reveal Solution</button>
+                        </div>
+                        <div class="solution-content" id="solution-8">
+                            <div class="code-playground" id="playground8">
+                                <div class="playground-header">
+                                    <div class="playground-title">✨ Interactive Solution - Exercise 8</div>
+                                    <div class="playground-actions">
+                                        <button class="run-btn" onclick="runCode('playground8')">▶ Run Code</button>
+                                        <button class="reset-btn" onclick="resetCode('playground8')">↻ Reset</button>
+                                        <div class="loading-indicator" id="loading8">
+                                            <div class="spinner"></div>
+                                            <span>Compiling...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="playground-editor">
+                                    <textarea id="editor8">#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct TreeNode {
+    int data;
+    struct TreeNode *left, *right;
+} TreeNode;
+
+TreeNode* createNode(int data) {
+    TreeNode* node = malloc(sizeof(TreeNode));
+    node->data = data;
+    node->left = node->right = NULL;
+    return node;
+}
+
+TreeNode* insert(TreeNode* root, int data) {
+    if (root == NULL) {
+        return createNode(data);
+    }
+
+    if (data < root->data) {
+        root->left = insert(root->left, data);
+    } else if (data > root->data) {
+        root->right = insert(root->right, data);
+    }
+
+    return root;
+}
+
+void inorder(TreeNode* root) {
+    if (root != NULL) {
+        inorder(root->left);
+        printf("%d ", root->data);
+        inorder(root->right);
+    }
+}
+
+void preorder(TreeNode* root) {
+    if (root != NULL) {
+        printf("%d ", root->data);
+        preorder(root->left);
+        preorder(root->right);
+    }
+}
+
+void postorder(TreeNode* root) {
+    if (root != NULL) {
+        postorder(root->left);
+        postorder(root->right);
+        printf("%d ", root->data);
+    }
+}
+
+int main() {
+    TreeNode* root = NULL;
+
+    printf("=== Binary Search Tree Demo ===\n\n");
+
+    printf("Inserting: 50, 30, 70, 20, 40, 60, 80\n\n");
+    int values[] = {50, 30, 70, 20, 40, 60, 80};
+
+    for (int i = 0; i < 7; i++) {
+        root = insert(root, values[i]);
+    }
+
+    printf("Tree structure:\n");
+    printf("       50\n");
+    printf("      /  \\\n");
+    printf("    30    70\n");
+    printf("   / \\   / \\\n");
+    printf("  20  40 60  80\n\n");
+
+    printf("Inorder (sorted):  ");
+    inorder(root);
+    printf("\n");
+
+    printf("Preorder:          ");
+    preorder(root);
+    printf("\n");
+
+    printf("Postorder:         ");
+    postorder(root);
+    printf("\n");
+
+    return 0;
+}</textarea>
+                                </div>
+                                <div class="playground-output">
+                                    <div class="output-header">📤 Output</div>
+                                    <div class="output-content">
+                                        <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="solution-key-concepts">
+                                <h5>🔑 Key Concepts:</h5>
+                                <ul>
+                                    <li><strong>BST property:</strong> Left < Root < Right (always maintained)</li>
+                                    <li><strong>Inorder gives sorted:</strong> Inorder traversal produces ascending order</li>
+                                    <li><strong>Recursion:</strong> Tree operations naturally recursive</li>
+                                    <li><strong>O(log n) average:</strong> Balanced trees have logarithmic height</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exercise 9: Binary Search Tree - Complete -->
+                <div class="exercise-item">
+                    <div class="exercise-header">
+                        <h3 class="exercise-title">Exercise 9: Binary Search Tree - Full Implementation</h3>
+                        <span class="difficulty-badge difficulty-hard">Hard</span>
+                    </div>
+                    <div>
+                        <span class="topic-badge topic-tree">Tree</span>
+                    </div>
+                    <p class="exercise-description">
+                        Build a complete BST with insertion, deletion, searching, and utility functions.
+                    </p>
+                    <div class="exercise-requirements">
+                        <h5>Requirements:</h5>
+                        <ul>
+                            <li>Implement <code>search(TreeNode* root, int data)</code> - returns node or NULL</li>
+                            <li>Implement <code>findMin(TreeNode* root)</code></li>
+                            <li>Implement <code>findMax(TreeNode* root)</code></li>
+                            <li>Implement <code>height(TreeNode* root)</code></li>
+                            <li>Implement <code>countNodes(TreeNode* root)</code></li>
+                            <li>Implement <code>deleteNode(TreeNode** root, int data)</code> - handle all 3 cases</li>
+                            <li>Implement <code>freeTree(TreeNode** root)</code> - free all nodes</li>
+                        </ul>
+                    </div>
+                    <div class="exercise-hints">
+                        <h5>💡 Hints:</h5>
+                        <ul>
+                            <li>Deletion has 3 cases: leaf, one child, two children</li>
+                            <li>For two children: replace with inorder successor (min of right subtree)</li>
+                            <li>Use postorder traversal to free tree (children first, then parent)</li>
+                        </ul>
+                    </div>
+
+                    <!-- Solution Section -->
+                    <div class="solution-section">
+                        <div class="solution-header">
+                            <h4>📝 Solution</h4>
+                            <button class="reveal-btn" id="btn-9" onclick="toggleSolution(9)">👁️ Reveal Solution</button>
+                        </div>
+                        <div class="solution-content" id="solution-9">
+                            <div class="code-playground" id="playground9">
+                                <div class="playground-header">
+                                    <div class="playground-title">✨ Interactive Solution - Exercise 9</div>
+                                    <div class="playground-actions">
+                                        <button class="run-btn" onclick="runCode('playground9')">▶ Run Code</button>
+                                        <button class="reset-btn" onclick="resetCode('playground9')">↻ Reset</button>
+                                        <div class="loading-indicator" id="loading9">
+                                            <div class="spinner"></div>
+                                            <span>Compiling...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="playground-editor">
+                                    <textarea id="editor9">#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct TreeNode {
+    int data;
+    struct TreeNode *left, *right;
+} TreeNode;
+
+TreeNode* createNode(int data) {
+    TreeNode* node = malloc(sizeof(TreeNode));
+    node->data = data;
+    node->left = node->right = NULL;
+    return node;
+}
+
+TreeNode* insert(TreeNode* root, int data) {
+    if (root == NULL) return createNode(data);
+    if (data < root->data) root->left = insert(root->left, data);
+    else if (data > root->data) root->right = insert(root->right, data);
+    return root;
+}
+
+TreeNode* search(TreeNode* root, int data) {
+    if (root == NULL || root->data == data) return root;
+    if (data < root->data) return search(root->left, data);
+    return search(root->right, data);
+}
+
+TreeNode* findMin(TreeNode* root) {
+    while (root && root->left != NULL) root = root->left;
+    return root;
+}
+
+TreeNode* findMax(TreeNode* root) {
+    while (root && root->right != NULL) root = root->right;
+    return root;
+}
+
+int height(TreeNode* root) {
+    if (root == NULL) return -1;
+    int leftH = height(root->left);
+    int rightH = height(root->right);
+    return 1 + (leftH > rightH ? leftH : rightH);
+}
+
+int countNodes(TreeNode* root) {
+    if (root == NULL) return 0;
+    return 1 + countNodes(root->left) + countNodes(root->right);
+}
+
+TreeNode* deleteNode(TreeNode* root, int data) {
+    if (root == NULL) return NULL;
+
+    if (data < root->data) {
+        root->left = deleteNode(root->left, data);
+    } else if (data > root->data) {
+        root->right = deleteNode(root->right, data);
+    } else {
+        // Leaf or one child
+        if (root->left == NULL) {
+            TreeNode* temp = root->right;
+            free(root);
+            return temp;
+        } else if (root->right == NULL) {
+            TreeNode* temp = root->left;
+            free(root);
+            return temp;
+        }
+        // Two children
+        TreeNode* temp = findMin(root->right);
+        root->data = temp->data;
+        root->right = deleteNode(root->right, temp->data);
+    }
+    return root;
+}
+
+void inorder(TreeNode* root) {
+    if (root != NULL) {
+        inorder(root->left);
+        printf("%d ", root->data);
+        inorder(root->right);
+    }
+}
+
+int main() {
+    TreeNode* root = NULL;
+    int values[] = {50, 30, 70, 20, 40, 60, 80};
+
+    printf("=== BST Complete Implementation ===\n\n");
+
+    for (int i = 0; i < 7; i++) root = insert(root, values[i]);
+
+    printf("Tree: ");
+    inorder(root);
+    printf("\n");
+
+    printf("Min: %d, Max: %d\n", findMin(root)->data, findMax(root)->data);
+    printf("Height: %d, Nodes: %d\n\n", height(root), countNodes(root));
+
+    printf("Search 40: %s\n", search(root, 40) ? "Found" : "Not found");
+    printf("Search 99: %s\n\n", search(root, 99) ? "Found" : "Not found");
+
+    printf("Deleting 20:\n");
+    root = deleteNode(root, 20);
+    inorder(root);
+    printf("\n");
+
+    return 0;
+}</textarea>
+                                </div>
+                                <div class="playground-output">
+                                    <div class="output-header">📤 Output</div>
+                                    <div class="output-content">
+                                        <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="solution-key-concepts">
+                                <h5>🔑 Key Concepts:</h5>
+                                <ul>
+                                    <li><strong>3 deletion cases:</strong> Leaf, one child, two children</li>
+                                    <li><strong>Inorder successor:</strong> Min of right subtree replaces deleted node</li>
+                                    <li><strong>Recursion everywhere:</strong> Insert, delete, search all recursive</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exercise 10: Doubly Linked List -->
+                <div class="exercise-item">
+                    <div class="exercise-header">
+                        <h3 class="exercise-title">Exercise 10: Doubly Linked List Implementation</h3>
+                        <span class="difficulty-badge difficulty-hard">Hard</span>
+                    </div>
+                    <div>
+                        <span class="topic-badge topic-linked-list">Linked List</span>
+                    </div>
+                    <p class="exercise-description">
+                        Implement a doubly linked list where each node has pointers to both next and previous nodes.
+                    </p>
+                    <div class="exercise-requirements">
+                        <h5>Requirements:</h5>
+                        <ul>
+                            <li>Define <code>struct DNode { int data; DNode *next, *prev; }</code></li>
+                            <li>Implement <code>insertAtBeginning(DNode** head, int data)</code></li>
+                            <li>Implement <code>insertAtEnd(DNode** head, int data)</code></li>
+                            <li>Implement <code>deleteNode(DNode** head, int data)</code></li>
+                            <li>Implement <code>displayForward(DNode* head)</code></li>
+                            <li>Implement <code>displayBackward(DNode* head)</code> - traverse to end, then back</li>
+                            <li>Test all operations and verify bidirectional traversal works</li>
+                        </ul>
+                    </div>
+                    <div class="exercise-hints">
+                        <h5>💡 Hints:</h5>
+                        <ul>
+                            <li>When inserting, update both next and prev pointers</li>
+                            <li>For deletion, update prev->next and next->prev</li>
+                            <li>Handle edge cases: deleting head, deleting last node</li>
+                        </ul>
+                    </div>
+
+                    <!-- Solution Section -->
+                    <div class="solution-section">
+                        <div class="solution-header">
+                            <h4>📝 Solution</h4>
+                            <button class="reveal-btn" id="btn-10" onclick="toggleSolution(10)">👁️ Reveal Solution</button>
+                        </div>
+                        <div class="solution-content" id="solution-10">
+                            <div class="code-playground" id="playground10">
+                                <div class="playground-header">
+                                    <div class="playground-title">✨ Interactive Solution - Exercise 10</div>
+                                    <div class="playground-actions">
+                                        <button class="run-btn" onclick="runCode('playground10')">▶ Run Code</button>
+                                        <button class="reset-btn" onclick="resetCode('playground10')">↻ Reset</button>
+                                        <div class="loading-indicator" id="loading10">
+                                            <div class="spinner"></div>
+                                            <span>Compiling...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="playground-editor">
+                                    <textarea id="editor10">#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct DNode {
+    int data;
+    struct DNode *next;
+    struct DNode *prev;
+} DNode;
+
+// Insert at beginning of doubly linked list
+void insertAtBeginning(DNode** head, int data) {
+    DNode* newNode = (DNode*)malloc(sizeof(DNode));
+    newNode->data = data;
+    newNode->next = *head;
+    newNode->prev = NULL;
+
+    if (*head != NULL) {
+        (*head)->prev = newNode;
+    }
+    *head = newNode;
+}
+
+// Insert at end of doubly linked list
+void insertAtEnd(DNode** head, int data) {
+    DNode* newNode = (DNode*)malloc(sizeof(DNode));
+    newNode->data = data;
+    newNode->next = NULL;
+
+    if (*head == NULL) {
+        newNode->prev = NULL;
+        *head = newNode;
+        return;
+    }
+
+    DNode* temp = *head;
+    while (temp->next != NULL) {
+        temp = temp->next;
+    }
+
+    temp->next = newNode;
+    newNode->prev = temp;
+}
+
+// Delete a node with specific data
+void deleteNode(DNode** head, int data) {
+    if (*head == NULL) {
+        printf("List is empty!\n");
+        return;
+    }
+
+    DNode* temp = *head;
+
+    // Find the node to delete
+    while (temp != NULL && temp->data != data) {
+        temp = temp->next;
+    }
+
+    if (temp == NULL) {
+        printf("Node with data %d not found!\n", data);
+        return;
+    }
+
+    // Case 1: Deleting head node
+    if (temp == *head) {
+        *head = temp->next;
+    }
+
+    // Case 2: Not the last node
+    if (temp->next != NULL) {
+        temp->next->prev = temp->prev;
+    }
+
+    // Case 3: Not the first node
+    if (temp->prev != NULL) {
+        temp->prev->next = temp->next;
+    }
+
+    free(temp);
+    printf("Deleted node with data: %d\n", data);
+}
+
+// Display list forward (head to tail)
+void displayForward(DNode* head) {
+    if (head == NULL) {
+        printf("List is empty!\n");
+        return;
+    }
+
+    printf("Forward: ");
+    DNode* temp = head;
+    while (temp != NULL) {
+        printf("%d", temp->data);
+        if (temp->next != NULL) printf(" <-> ");
+        temp = temp->next;
+    }
+    printf(" -> NULL\n");
+}
+
+// Display list backward (tail to head)
+void displayBackward(DNode* head) {
+    if (head == NULL) {
+        printf("List is empty!\n");
+        return;
+    }
+
+    // First, go to the last node
+    DNode* temp = head;
+    while (temp->next != NULL) {
+        temp = temp->next;
+    }
+
+    printf("Backward: ");
+    while (temp != NULL) {
+        printf("%d", temp->data);
+        if (temp->prev != NULL) printf(" <-> ");
+        temp = temp->prev;
+    }
+    printf(" -> NULL\n");
+}
+
+int main() {
+    DNode* head = NULL;
+
+    printf("=== Doubly Linked List Demo ===\n\n");
+
+    // Test insertAtBeginning
+    printf("Inserting 3, 2, 1 at beginning:\n");
+    insertAtBeginning(&head, 3);
+    insertAtBeginning(&head, 2);
+    insertAtBeginning(&head, 1);
+    displayForward(head);
+    displayBackward(head);
+
+    // Test insertAtEnd
+    printf("\nInserting 4, 5, 6 at end:\n");
+    insertAtEnd(&head, 4);
+    insertAtEnd(&head, 5);
+    insertAtEnd(&head, 6);
+    displayForward(head);
+    displayBackward(head);
+
+    // Test deletion
+    printf("\nDeleting middle node (3):\n");
+    deleteNode(&head, 3);
+    displayForward(head);
+    displayBackward(head);
+
+    printf("\nDeleting head node (1):\n");
+    deleteNode(&head, 1);
+    displayForward(head);
+    displayBackward(head);
+
+    printf("\nDeleting tail node (6):\n");
+    deleteNode(&head, 6);
+    displayForward(head);
+    displayBackward(head);
+
+    return 0;
+}</textarea>
+                                </div>
+                                <div class="playground-output">
+                                    <div class="output-header">📤 Output</div>
+                                    <div class="output-content">
+                                        <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="solution-key-concepts">
+                                <h5>🔑 Key Concepts:</h5>
+                                <ul>
+                                    <li><strong>Bidirectional pointers:</strong> Each node has both next and prev pointers</li>
+                                    <li><strong>Insert at beginning:</strong> Set new node's next to head, update old head's prev</li>
+                                    <li><strong>Insert at end:</strong> Traverse to tail, update both next and prev pointers</li>
+                                    <li><strong>Delete node:</strong> Update both prev->next and next->prev (handle 3 cases)</li>
+                                    <li><strong>Backward traversal:</strong> Go to tail, then follow prev pointers back</li>
+                                    <li><strong>Advantages:</strong> Can traverse both directions, easier deletion</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exercise 11: Circular Linked List -->
+                <div class="exercise-item">
+                    <div class="exercise-header">
+                        <h3 class="exercise-title">Exercise 11: Circular Linked List</h3>
+                        <span class="difficulty-badge difficulty-hard">Hard</span>
+                    </div>
+                    <div>
+                        <span class="topic-badge topic-linked-list">Linked List</span>
+                    </div>
+                    <p class="exercise-description">
+                        Implement a circular linked list where the last node points back to the first node.
+                    </p>
+                    <div class="exercise-requirements">
+                        <h5>Requirements:</h5>
+                        <ul>
+                            <li>Implement <code>insertInCircular(Node** head, int data)</code></li>
+                            <li>Implement <code>deleteFromCircular(Node** head, int data)</code></li>
+                            <li>Implement <code>displayCircular(Node* head)</code> - stop when back at head</li>
+                            <li>Implement <code>split(Node* head, Node** head1, Node** head2)</code> - split into two circular lists</li>
+                            <li>Test: create circular list with 1-8, split into two lists of 4 each</li>
+                            <li>Verify both halves are properly circular</li>
+                        </ul>
+                    </div>
+                    <div class="exercise-hints">
+                        <h5>💡 Hints:</h5>
+                        <ul>
+                            <li>Last node's next should point to head, not NULL</li>
+                            <li>For display: check if current->next == head to stop</li>
+                            <li>Be careful with infinite loops!</li>
+                        </ul>
+                    </div>
+
+                    <!-- Solution Section -->
+                    <div class="solution-section">
+                        <div class="solution-header">
+                            <h4>📝 Solution</h4>
+                            <button class="reveal-btn" id="btn-11" onclick="toggleSolution(11)">👁️ Reveal Solution</button>
+                        </div>
+                        <div class="solution-content" id="solution-11">
+                            <div class="code-playground" id="playground11">
+                                <div class="playground-header">
+                                    <div class="playground-title">✨ Interactive Solution - Exercise 11</div>
+                                    <div class="playground-actions">
+                                        <button class="run-btn" onclick="runCode('playground11')">▶ Run Code</button>
+                                        <button class="reset-btn" onclick="resetCode('playground11')">↻ Reset</button>
+                                        <div class="loading-indicator" id="loading11">
+                                            <div class="spinner"></div>
+                                            <span>Compiling...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="playground-editor">
+                                    <textarea id="editor11">#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+// Insert a node at the end of circular list
+void insertInCircular(Node** head, int data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = data;
+
+    if (*head == NULL) {
+        // First node points to itself
+        newNode->next = newNode;
+        *head = newNode;
+        return;
+    }
+
+    // Find the last node (points back to head)
+    Node* temp = *head;
+    while (temp->next != *head) {
+        temp = temp->next;
+    }
+
+    // Insert new node and maintain circular property
+    temp->next = newNode;
+    newNode->next = *head;
+}
+
+// Delete a node from circular list
+void deleteFromCircular(Node** head, int data) {
+    if (*head == NULL) {
+        printf("List is empty!\n");
+        return;
+    }
+
+    Node *current = *head, *prev = NULL;
+
+    // Case 1: Single node
+    if (current->data == data && current->next == *head) {
+        free(current);
+        *head = NULL;
+        printf("Deleted %d (was only node)\n", data);
+        return;
+    }
+
+    // Case 2: Head node (but not only node)
+    if (current->data == data) {
+        // Find last node
+        Node* last = *head;
+        while (last->next != *head) {
+            last = last->next;
+        }
+        last->next = current->next;
+        *head = current->next;
+        free(current);
+        printf("Deleted %d (was head)\n", data);
+        return;
+    }
+
+    // Case 3: Non-head node
+    prev = *head;
+    while (prev->next != *head && prev->next->data != data) {
+        prev = prev->next;
+    }
+
+    if (prev->next->data == data) {
+        Node* temp = prev->next;
+        prev->next = temp->next;
+        free(temp);
+        printf("Deleted %d\n", data);
+    } else {
+        printf("Node with data %d not found!\n", data);
+    }
+}
+
+// Display circular list (one full rotation)
+void displayCircular(Node* head) {
+    if (head == NULL) {
+        printf("List is empty!\n");
+        return;
+    }
+
+    Node* temp = head;
+    printf("Circular List: ");
+    do {
+        printf("%d", temp->data);
+        temp = temp->next;
+        if (temp != head) printf(" -> ");
+    } while (temp != head);
+    printf(" -> [back to %d]\n", head->data);
+}
+
+// Split circular list into two halves
+void split(Node* head, Node** head1, Node** head2) {
+    if (head == NULL || head->next == head) {
+        *head1 = head;
+        *head2 = NULL;
+        return;
+    }
+
+    // Use slow and fast pointer to find middle
+    Node *slow = head, *fast = head;
+    while (fast->next != head && fast->next->next != head) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+
+    // If even number of nodes, move fast to last
+    if (fast->next->next == head) {
+        fast = fast->next;
+    }
+
+    // Set head pointers
+    *head1 = head;
+    *head2 = slow->next;
+
+    // Make first half circular
+    slow->next = *head1;
+
+    // Make second half circular
+    fast->next = *head2;
+}
+
+int main() {
+    Node* head = NULL;
+    Node* head1 = NULL;
+    Node* head2 = NULL;
+
+    printf("=== Circular Linked List Demo ===\n\n");
+
+    // Create circular list 1-8
+    printf("Creating circular list with 1-8:\n");
+    for (int i = 1; i <= 8; i++) {
+        insertInCircular(&head, i);
+    }
+    displayCircular(head);
+
+    // Test deletion
+    printf("\nDeleting node 5:\n");
+    deleteFromCircular(&head, 5);
+    displayCircular(head);
+
+    printf("\nDeleting node 1 (head):\n");
+    deleteFromCircular(&head, 1);
+    displayCircular(head);
+
+    // Recreate full list for split demo
+    head = NULL;
+    printf("\n--- Split Demo ---\n");
+    printf("Recreating list 1-8:\n");
+    for (int i = 1; i <= 8; i++) {
+        insertInCircular(&head, i);
+    }
+    displayCircular(head);
+
+    // Split the list
+    printf("\nSplitting into two circular lists:\n");
+    split(head, &head1, &head2);
+
+    printf("First half: ");
+    displayCircular(head1);
+
+    printf("Second half: ");
+    displayCircular(head2);
+
+    return 0;
+}</textarea>
+                                </div>
+                                <div class="playground-output">
+                                    <div class="output-header">📤 Output</div>
+                                    <div class="output-content">
+                                        <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="solution-key-concepts">
+                                <h5>🔑 Key Concepts:</h5>
+                                <ul>
+                                    <li><strong>Circular property:</strong> Last node's next points to head (not NULL)</li>
+                                    <li><strong>Traversal termination:</strong> Use do-while and check if current == head</li>
+                                    <li><strong>Single node:</strong> Node points to itself (next == this)</li>
+                                    <li><strong>Deletion cases:</strong> Only node, head node, or middle node (each different)</li>
+                                    <li><strong>Split algorithm:</strong> Use slow/fast pointers to find middle</li>
+                                    <li><strong>Maintaining circularity:</strong> Always ensure last->next = head after operations</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exercise 12: Merge Two Sorted Lists -->
+                <div class="exercise-item">
+                    <div class="exercise-header">
+                        <h3 class="exercise-title">Exercise 12: Merge Two Sorted Linked Lists</h3>
+                        <span class="difficulty-badge difficulty-medium">Medium</span>
+                    </div>
+                    <div>
+                        <span class="topic-badge topic-linked-list">Linked List</span>
+                    </div>
+                    <p class="exercise-description">
+                        Given two sorted linked lists, merge them into a single sorted linked list.
+                    </p>
+                    <div class="exercise-requirements">
+                        <h5>Requirements:</h5>
+                        <ul>
+                            <li>Implement <code>mergeSorted(Node* list1, Node* list2)</code></li>
+                            <li>Do NOT create new nodes - rearrange existing nodes</li>
+                            <li>Maintain sorted order in merged list</li>
+                            <li>Test: list1 = [1,3,5,7], list2 = [2,4,6,8]</li>
+                            <li>Result should be: [1,2,3,4,5,6,7,8]</li>
+                        </ul>
+                    </div>
+                    <div class="exercise-hints">
+                        <h5>💡 Hints:</h5>
+                        <ul>
+                            <li>Use two pointers to traverse both lists simultaneously</li>
+                            <li>Compare current nodes, link smaller one to result</li>
+                            <li>Handle remaining nodes when one list is exhausted</li>
+                        </ul>
+                    </div>
+
+                    <!-- Solution Section -->
+                    <div class="solution-section">
+                        <div class="solution-header">
+                            <h4>📝 Solution</h4>
+                            <button class="reveal-btn" id="btn-12" onclick="toggleSolution(12)">👁️ Reveal Solution</button>
+                        </div>
+                        <div class="solution-content" id="solution-12">
+                            <div class="code-playground" id="playground12">
+                                <div class="playground-header">
+                                    <div class="playground-title">✨ Interactive Solution - Exercise 12</div>
+                                    <div class="playground-actions">
+                                        <button class="run-btn" onclick="runCode('playground12')">▶ Run Code</button>
+                                        <button class="reset-btn" onclick="resetCode('playground12')">↻ Reset</button>
+                                        <div class="loading-indicator" id="loading12">
+                                            <div class="spinner"></div>
+                                            <span>Compiling...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="playground-editor">
+                                    <textarea id="editor12">#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+// Helper function to create a new node
+Node* createNode(int data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Helper function to insert at end
+void insertAtEnd(Node** head, int data) {
+    Node* newNode = createNode(data);
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+    Node* temp = *head;
+    while (temp->next != NULL) {
+        temp = temp->next;
+    }
+    temp->next = newNode;
+}
+
+// Display linked list
+void display(Node* head) {
+    if (head == NULL) {
+        printf("Empty");
+        return;
+    }
+    while (head != NULL) {
+        printf("%d", head->data);
+        if (head->next != NULL) printf(" -> ");
+        head = head->next;
+    }
+}
+
+// Merge two sorted linked lists
+Node* mergeSorted(Node* list1, Node* list2) {
+    // Base cases
+    if (list1 == NULL) return list2;
+    if (list2 == NULL) return list1;
+
+    // Create a dummy node to simplify code
+    Node dummy;
+    Node* tail = &dummy;
+    dummy.next = NULL;
+
+    // Merge nodes in sorted order
+    while (list1 != NULL && list2 != NULL) {
+        if (list1->data <= list2->data) {
+            tail->next = list1;
+            list1 = list1->next;
+        } else {
+            tail->next = list2;
+            list2 = list2->next;
+        }
+        tail = tail->next;
+    }
+
+    // Attach remaining nodes
+    if (list1 != NULL) {
+        tail->next = list1;
+    } else {
+        tail->next = list2;
+    }
+
+    return dummy.next;
+}
+
+int main() {
+    Node* list1 = NULL;
+    Node* list2 = NULL;
+
+    printf("=== Merge Two Sorted Linked Lists ===\n\n");
+
+    // Create first sorted list: 1, 3, 5, 7
+    printf("Creating list1: ");
+    insertAtEnd(&list1, 1);
+    insertAtEnd(&list1, 3);
+    insertAtEnd(&list1, 5);
+    insertAtEnd(&list1, 7);
+    display(list1);
+    printf("\n");
+
+    // Create second sorted list: 2, 4, 6, 8
+    printf("Creating list2: ");
+    insertAtEnd(&list2, 2);
+    insertAtEnd(&list2, 4);
+    insertAtEnd(&list2, 6);
+    insertAtEnd(&list2, 8);
+    display(list2);
+    printf("\n");
+
+    // Merge the two lists
+    printf("\nMerging lists...\n");
+    Node* mergedList = mergeSorted(list1, list2);
+
+    printf("Merged list: ");
+    display(mergedList);
+    printf("\n");
+
+    // Test with different sized lists
+    printf("\n--- Test 2: Different Sizes ---\n");
+    Node* list3 = NULL;
+    Node* list4 = NULL;
+
+    printf("Creating list3: ");
+    insertAtEnd(&list3, 1);
+    insertAtEnd(&list3, 2);
+    insertAtEnd(&list3, 10);
+    display(list3);
+    printf("\n");
+
+    printf("Creating list4: ");
+    insertAtEnd(&list4, 3);
+    insertAtEnd(&list4, 4);
+    insertAtEnd(&list4, 5);
+    insertAtEnd(&list4, 6);
+    insertAtEnd(&list4, 7);
+    display(list4);
+    printf("\n");
+
+    Node* mergedList2 = mergeSorted(list3, list4);
+    printf("\nMerged list: ");
+    display(mergedList2);
+    printf("\n");
+
+    return 0;
+}</textarea>
+                                </div>
+                                <div class="playground-output">
+                                    <div class="output-header">📤 Output</div>
+                                    <div class="output-content">
+                                        <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="solution-key-concepts">
+                                <h5>🔑 Key Concepts:</h5>
+                                <ul>
+                                    <li><strong>Dummy node technique:</strong> Simplifies code by avoiding special head case</li>
+                                    <li><strong>Two pointers:</strong> Traverse both lists simultaneously</li>
+                                    <li><strong>Comparison:</strong> Link smaller node to result, advance its pointer</li>
+                                    <li><strong>Remaining nodes:</strong> After one list exhausted, attach the rest</li>
+                                    <li><strong>In-place merge:</strong> No new nodes created, just rearrange pointers</li>
+                                    <li><strong>Time complexity:</strong> O(m+n) where m and n are list lengths</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exercise 13: Detect Loop in Linked List -->
+                <div class="exercise-item">
+                    <div class="exercise-header">
+                        <h3 class="exercise-title">Exercise 13: Detect Loop in Linked List (Floyd's Algorithm)</h3>
+                        <span class="difficulty-badge difficulty-hard">Hard</span>
+                    </div>
+                    <div>
+                        <span class="topic-badge topic-linked-list">Linked List</span>
+                    </div>
+                    <p class="exercise-description">
+                        Detect if a linked list contains a loop using Floyd's cycle detection algorithm (tortoise and hare).
+                    </p>
+                    <div class="exercise-requirements">
+                        <h5>Requirements:</h5>
+                        <ul>
+                            <li>Implement <code>detectLoop(Node* head)</code> - returns 1 if loop exists, 0 otherwise</li>
+                            <li>Use two pointers: slow (moves 1 step) and fast (moves 2 steps)</li>
+                            <li>Implement <code>findLoopStart(Node* head)</code> - returns node where loop starts</li>
+                            <li>Implement <code>breakLoop(Node* head)</code> - removes the loop</li>
+                            <li>Test: create list 1→2→3→4→5, make 5 point back to 3, detect and break loop</li>
+                        </ul>
+                    </div>
+                    <div class="exercise-hints">
+                        <h5>💡 Hints:</h5>
+                        <ul>
+                            <li>If fast and slow meet, there's a loop</li>
+                            <li>To find loop start: reset slow to head, move both 1 step at a time</li>
+                            <li>They'll meet at the loop start node</li>
+                        </ul>
+                    </div>
+
+                    <!-- Solution Section -->
+                    <div class="solution-section">
+                        <div class="solution-header">
+                            <h4>📝 Solution</h4>
+                            <button class="reveal-btn" id="btn-13" onclick="toggleSolution(13)">👁️ Reveal Solution</button>
+                        </div>
+                        <div class="solution-content" id="solution-13">
+                            <div class="code-playground" id="playground13">
+                                <div class="playground-header">
+                                    <div class="playground-title">✨ Interactive Solution - Exercise 13</div>
+                                    <div class="playground-actions">
+                                        <button class="run-btn" onclick="runCode('playground13')">▶ Run Code</button>
+                                        <button class="reset-btn" onclick="resetCode('playground13')">↻ Reset</button>
+                                        <div class="loading-indicator" id="loading13">
+                                            <div class="spinner"></div>
+                                            <span>Compiling...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="playground-editor">
+                                    <textarea id="editor13">#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+// Helper function to create node
+Node* createNode(int data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Helper function to insert at end
+void insertAtEnd(Node** head, int data) {
+    Node* newNode = createNode(data);
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+    Node* temp = *head;
+    while (temp->next != NULL) {
+        temp = temp->next;
+    }
+    temp->next = newNode;
+}
+
+// Detect if loop exists (Floyd's Algorithm)
+int detectLoop(Node* head) {
+    if (head == NULL || head->next == NULL) {
+        return 0;
+    }
+
+    Node* slow = head;
+    Node* fast = head;
+
+    while (fast != NULL && fast->next != NULL) {
+        slow = slow->next;           // Move 1 step
+        fast = fast->next->next;     // Move 2 steps
+
+        if (slow == fast) {
+            return 1;  // Loop detected!
+        }
+    }
+
+    return 0;  // No loop
+}
+
+// Find where the loop starts
+Node* findLoopStart(Node* head) {
+    if (head == NULL || head->next == NULL) {
+        return NULL;
+    }
+
+    Node* slow = head;
+    Node* fast = head;
+    int loopExists = 0;
+
+    // First, detect if loop exists
+    while (fast != NULL && fast->next != NULL) {
+        slow = slow->next;
+        fast = fast->next->next;
+
+        if (slow == fast) {
+            loopExists = 1;
+            break;
+        }
+    }
+
+    if (!loopExists) {
+        return NULL;
+    }
+
+    // Find loop start: reset slow to head
+    slow = head;
+    while (slow != fast) {
+        slow = slow->next;
+        fast = fast->next;
+    }
+
+    return slow;  // This is where loop starts
+}
+
+// Break the loop
+void breakLoop(Node* head) {
+    Node* loopStart = findLoopStart(head);
+
+    if (loopStart == NULL) {
+        printf("No loop to break!\n");
+        return;
+    }
+
+    // Find the last node in the loop
+    Node* temp = loopStart;
+    while (temp->next != loopStart) {
+        temp = temp->next;
+    }
+
+    // Break the loop
+    temp->next = NULL;
+    printf("Loop broken! Last node was: %d\n", temp->data);
+}
+
+// Display list (with loop protection)
+void displayWithLimit(Node* head, int maxNodes) {
+    if (head == NULL) {
+        printf("Empty\n");
+        return;
+    }
+
+    Node* temp = head;
+    int count = 0;
+
+    while (temp != NULL && count < maxNodes) {
+        printf("%d", temp->data);
+        if (temp->next != NULL && count < maxNodes - 1) {
+            printf(" -> ");
+        }
+        temp = temp->next;
+        count++;
+    }
+
+    if (count == maxNodes && temp != NULL) {
+        printf(" -> ... (loop detected, stopped display)");
+    }
+    printf("\n");
+}
+
+int main() {
+    Node* head = NULL;
+
+    printf("=== Floyd's Loop Detection Algorithm ===\n\n");
+
+    // Create list: 1 -> 2 -> 3 -> 4 -> 5
+    printf("Creating list: 1 -> 2 -> 3 -> 4 -> 5\n");
+    for (int i = 1; i <= 5; i++) {
+        insertAtEnd(&head, i);
+    }
+
+    printf("Checking for loop: %s\n", detectLoop(head) ? "LOOP FOUND" : "No loop");
+
+    // Create a loop: 5 -> 3
+    printf("\nCreating loop: Making node 5 point back to node 3\n");
+    Node* temp = head;
+    Node* node3 = NULL;
+
+    // Find node 3
+    while (temp != NULL) {
+        if (temp->data == 3) {
+            node3 = temp;
+        }
+        if (temp->next == NULL) {
+            // This is node 5, make it point to node 3
+            temp->next = node3;
+            break;
+        }
+        temp = temp->next;
+    }
+
+    printf("Checking for loop: %s\n", detectLoop(head) ? "LOOP FOUND!" : "No loop");
+
+    // Find loop start
+    Node* loopStart = findLoopStart(head);
+    if (loopStart != NULL) {
+        printf("Loop starts at node: %d\n", loopStart->data);
+    }
+
+    // Display with limit (to avoid infinite loop)
+    printf("\nList structure (limited display): ");
+    displayWithLimit(head, 10);
+
+    // Break the loop
+    printf("\nBreaking the loop...\n");
+    breakLoop(head);
+
+    printf("Checking for loop: %s\n", detectLoop(head) ? "LOOP FOUND" : "No loop!");
+
+    printf("List after breaking loop: ");
+    displayWithLimit(head, 10);
+
+    return 0;
+}</textarea>
+                                </div>
+                                <div class="playground-output">
+                                    <div class="output-header">📤 Output</div>
+                                    <div class="output-content">
+                                        <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="solution-key-concepts">
+                                <h5>🔑 Key Concepts:</h5>
+                                <ul>
+                                    <li><strong>Floyd's Algorithm:</strong> Two pointers - slow (1 step) and fast (2 steps)</li>
+                                    <li><strong>Loop detection:</strong> If slow == fast, loop exists</li>
+                                    <li><strong>Finding loop start:</strong> Reset slow to head, move both 1 step until they meet</li>
+                                    <li><strong>Breaking loop:</strong> Find last node in loop, set its next to NULL</li>
+                                    <li><strong>Time complexity:</strong> O(n) - visits each node at most twice</li>
+                                    <li><strong>Space complexity:</strong> O(1) - only uses two pointers</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exercise 14: Expression Tree -->
+                <div class="exercise-item">
+                    <div class="exercise-header">
+                        <h3 class="exercise-title">Exercise 14: Expression Tree Construction & Evaluation</h3>
+                        <span class="difficulty-badge difficulty-hard">Hard</span>
+                    </div>
+                    <div>
+                        <span class="topic-badge topic-tree">Tree</span>
+                        <span class="topic-badge topic-stack">Stack</span>
+                    </div>
+                    <p class="exercise-description">
+                        Build and evaluate expression trees from postfix expressions.
+                    </p>
+                    <div class="exercise-requirements">
+                        <h5>Requirements:</h5>
+                        <ul>
+                            <li>Implement <code>buildExpressionTree(char* postfix)</code></li>
+                            <li>Tree nodes store operators or operands</li>
+                            <li>Implement <code>evaluate(TreeNode* root)</code> - returns expression result</li>
+                            <li>Implement <code>toInfix(TreeNode* root)</code> - converts tree to infix with parentheses</li>
+                            <li>Test with: "23*54*+" (postfix for (2*3)+(5*4) = 26)</li>
+                            <li>Display infix form and evaluated result</li>
+                        </ul>
+                    </div>
+                    <div class="exercise-hints">
+                        <h5>💡 Hints:</h5>
+                        <ul>
+                            <li>Use stack: push operands, pop two for each operator</li>
+                            <li>Operator becomes root with operands as children</li>
+                            <li>Evaluate recursively: evaluate children, apply operator</li>
+                        </ul>
+                    </div>
+
+                    <!-- Solution Section -->
+                    <div class="solution-section">
+                        <div class="solution-header">
+                            <h4>📝 Solution</h4>
+                            <button class="reveal-btn" id="btn-14" onclick="toggleSolution(14)">👁️ Reveal Solution</button>
+                        </div>
+                        <div class="solution-content" id="solution-14">
+                            <div class="code-playground" id="playground14">
+                                <div class="playground-header">
+                                    <div class="playground-title">✨ Interactive Solution - Exercise 14</div>
+                                    <div class="playground-actions">
+                                        <button class="run-btn" onclick="runCode('playground14')">▶ Run Code</button>
+                                        <button class="reset-btn" onclick="resetCode('playground14')">↻ Reset</button>
+                                        <div class="loading-indicator" id="loading14">
+                                            <div class="spinner"></div>
+                                            <span>Compiling...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="playground-editor">
+                                    <textarea id="editor14">#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+typedef struct TreeNode {
+    char data;
+    struct TreeNode* left;
+    struct TreeNode* right;
+} TreeNode;
+
+// Stack for tree nodes
+typedef struct StackNode {
+    TreeNode* treeNode;
+    struct StackNode* next;
+} StackNode;
+
+typedef struct Stack {
+    StackNode* top;
+} Stack;
+
+// Stack operations
+void initStack(Stack* s) {
+    s->top = NULL;
+}
+
+void push(Stack* s, TreeNode* node) {
+    StackNode* newNode = (StackNode*)malloc(sizeof(StackNode));
+    newNode->treeNode = node;
+    newNode->next = s->top;
+    s->top = newNode;
+}
+
+TreeNode* pop(Stack* s) {
+    if (s->top == NULL) return NULL;
+
+    StackNode* temp = s->top;
+    TreeNode* treeNode = temp->treeNode;
+    s->top = s->top->next;
+    free(temp);
+    return treeNode;
+}
+
+// Create a tree node
+TreeNode* createTreeNode(char data) {
+    TreeNode* node = (TreeNode*)malloc(sizeof(TreeNode));
+    node->data = data;
+    node->left = NULL;
+    node->right = NULL;
+    return node;
+}
+
+// Check if character is operator
+int isOperator(char c) {
+    return (c == '+' || c == '-' || c == '*' || c == '/');
+}
+
+// Build expression tree from postfix
+TreeNode* buildExpressionTree(char* postfix) {
+    Stack stack;
+    initStack(&stack);
+
+    for (int i = 0; i < strlen(postfix); i++) {
+        char c = postfix[i];
+
+        if (isdigit(c)) {
+            // Operand: create node and push to stack
+            TreeNode* node = createTreeNode(c);
+            push(&stack, node);
+        } else if (isOperator(c)) {
+            // Operator: pop two nodes, make them children
+            TreeNode* node = createTreeNode(c);
+            node->right = pop(&stack);  // Second operand
+            node->left = pop(&stack);   // First operand
+            push(&stack, node);
+        }
+    }
+
+    return pop(&stack);  // Root of expression tree
+}
+
+// Evaluate expression tree
+int evaluate(TreeNode* root) {
+    if (root == NULL) return 0;
+
+    // If leaf node (operand), return its value
+    if (root->left == NULL && root->right == NULL) {
+        return root->data - '0';  // Convert char to int
+    }
+
+    // Recursively evaluate left and right subtrees
+    int leftVal = evaluate(root->left);
+    int rightVal = evaluate(root->right);
+
+    // Apply operator
+    switch (root->data) {
+        case '+': return leftVal + rightVal;
+        case '-': return leftVal - rightVal;
+        case '*': return leftVal * rightVal;
+        case '/': return leftVal / rightVal;
+        default: return 0;
+    }
+}
+
+// Convert tree to infix notation with parentheses
+void toInfix(TreeNode* root) {
+    if (root == NULL) return;
+
+    // If leaf node (operand), just print it
+    if (root->left == NULL && root->right == NULL) {
+        printf("%c", root->data);
+        return;
+    }
+
+    // Print with parentheses
+    printf("(");
+    toInfix(root->left);
+    printf("%c", root->data);
+    toInfix(root->right);
+    printf(")");
+}
+
+// Inorder traversal (for visualization)
+void inorder(TreeNode* root) {
+    if (root == NULL) return;
+    inorder(root->left);
+    printf("%c ", root->data);
+    inorder(root->right);
+}
+
+int main() {
+    printf("=== Expression Tree Demo ===\n\n");
+
+    // Test 1: (2*3)+(5*4) = 26
+    char postfix1[] = "23*54*+";
+    printf("Test 1: Postfix expression: %s\n", postfix1);
+
+    TreeNode* root1 = buildExpressionTree(postfix1);
+
+    printf("Infix form: ");
+    toInfix(root1);
+    printf("\n");
+
+    int result1 = evaluate(root1);
+    printf("Result: %d\n", result1);
+    printf("Expected: 26\n");
+
+    // Test 2: ((7-3)*2)+5 = 13
+    printf("\n--- Test 2 ---\n");
+    char postfix2[] = "73-2*5+";
+    printf("Postfix expression: %s\n", postfix2);
+
+    TreeNode* root2 = buildExpressionTree(postfix2);
+
+    printf("Infix form: ");
+    toInfix(root2);
+    printf("\n");
+
+    int result2 = evaluate(root2);
+    printf("Result: %d\n", result2);
+    printf("Expected: 13\n");
+
+    // Test 3: (8/2)+(3*4) = 16
+    printf("\n--- Test 3 ---\n");
+    char postfix3[] = "82/34*+";
+    printf("Postfix expression: %s\n", postfix3);
+
+    TreeNode* root3 = buildExpressionTree(postfix3);
+
+    printf("Infix form: ");
+    toInfix(root3);
+    printf("\n");
+
+    int result3 = evaluate(root3);
+    printf("Result: %d\n", result3);
+    printf("Expected: 16\n");
+
+    return 0;
+}</textarea>
+                                </div>
+                                <div class="playground-output">
+                                    <div class="output-header">📤 Output</div>
+                                    <div class="output-content">
+                                        <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="solution-key-concepts">
+                                <h5>🔑 Key Concepts:</h5>
+                                <ul>
+                                    <li><strong>Expression tree:</strong> Binary tree representing arithmetic expression</li>
+                                    <li><strong>Postfix to tree:</strong> Use stack - push operands, pop two for operators</li>
+                                    <li><strong>Tree structure:</strong> Operators are internal nodes, operands are leaves</li>
+                                    <li><strong>Evaluation:</strong> Recursively evaluate left and right, apply operator</li>
+                                    <li><strong>Infix conversion:</strong> Inorder traversal with parentheses</li>
+                                    <li><strong>Applications:</strong> Compilers, calculators, expression parsing</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exercise 15: Multi-File Library -->
+                <div class="exercise-item">
+                    <div class="exercise-header">
+                        <h3 class="exercise-title">Exercise 15: Data Structures Library (Multi-File)</h3>
+                        <span class="difficulty-badge difficulty-hard">Hard</span>
+                    </div>
+                    <div>
+                        <span class="topic-badge topic-linked-list">Linked List</span>
+                        <span class="topic-badge topic-stack">Stack</span>
+                        <span class="topic-badge topic-queue">Queue</span>
+                        <span class="topic-badge topic-tree">Tree</span>
+                    </div>
+                    <p class="exercise-description">
+                        Create a professional multi-file library containing all data structure implementations.
+                    </p>
+                    <div class="exercise-requirements">
+                        <h5>Requirements:</h5>
+                        <ul>
+                            <li>Create <code>linkedlist.h</code> and <code>linkedlist.c</code></li>
+                            <li>Create <code>stack.h</code> and <code>stack.c</code></li>
+                            <li>Create <code>queue.h</code> and <code>queue.c</code></li>
+                            <li>Create <code>bst.h</code> and <code>bst.c</code></li>
+                            <li>Create <code>main.c</code> that uses all libraries</li>
+                            <li>Write a Makefile to compile everything</li>
+                            <li>Use proper include guards, documentation, and error handling</li>
+                        </ul>
+                    </div>
+                    <div class="exercise-hints">
+                        <h5>💡 Hints:</h5>
+                        <ul>
+                            <li>Include guards: <code>#ifndef LINKEDLIST_H</code> ...</li>
+                            <li>Header files have declarations, .c files have implementations</li>
+                            <li>Makefile targets: all, clean, linkedlist.o, stack.o, etc.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Solution Section -->
+                    <div class="solution-section">
+                        <div class="solution-header">
+                            <h4>📝 Solution</h4>
+                            <button class="reveal-btn" id="btn-15" onclick="toggleSolution(15)">👁️ Reveal Solution</button>
+                        </div>
+                        <div class="solution-content" id="solution-15">
+                            <div class="code-playground" id="playground15">
+                                <div class="playground-header">
+                                    <div class="playground-title">✨ Interactive Solution - Exercise 15</div>
+                                    <div class="playground-actions">
+                                        <button class="run-btn" onclick="runCode('playground15')">▶ Run Code</button>
+                                        <button class="reset-btn" onclick="resetCode('playground15')">↻ Reset</button>
+                                        <div class="loading-indicator" id="loading15">
+                                            <div class="spinner"></div>
+                                            <span>Compiling...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="playground-editor">
+                                    <textarea id="editor15">/*
+ * Data Structures Library - Complete Implementation
+ * This demonstrates proper library structure with all components
+ * In a real project, these would be separate files:
+ * - linkedlist.h, linkedlist.c
+ * - stack.h, stack.c
+ * - queue.h, queue.c
+ * - bst.h, bst.c
+ * - main.c
+ * - Makefile
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// ============ LINKED LIST MODULE ============
+
+typedef struct ListNode {
+    int data;
+    struct ListNode* next;
+} ListNode;
+
+ListNode* list_createNode(int data) {
+    ListNode* node = (ListNode*)malloc(sizeof(ListNode));
+    node->data = data;
+    node->next = NULL;
+    return node;
+}
+
+void list_insert(ListNode** head, int data) {
+    ListNode* node = list_createNode(data);
+    node->next = *head;
+    *head = node;
+}
+
+void list_display(ListNode* head) {
+    printf("List: ");
+    while (head) {
+        printf("%d ", head->data);
+        head = head->next;
+    }
+    printf("\n");
+}
+
+// ============ STACK MODULE ============
+
+typedef struct StackNode {
+    int data;
+    struct StackNode* next;
+} StackNode;
+
+typedef struct Stack {
+    StackNode* top;
+} Stack;
+
+void stack_init(Stack* s) {
+    s->top = NULL;
+}
+
+void stack_push(Stack* s, int data) {
+    StackNode* node = (StackNode*)malloc(sizeof(StackNode));
+    node->data = data;
+    node->next = s->top;
+    s->top = node;
+}
+
+int stack_pop(Stack* s) {
+    if (!s->top) return -1;
+    StackNode* temp = s->top;
+    int data = temp->data;
+    s->top = s->top->next;
+    free(temp);
+    return data;
+}
+
+int stack_isEmpty(Stack* s) {
+    return s->top == NULL;
+}
+
+// ============ QUEUE MODULE ============
+
+typedef struct QueueNode {
+    int data;
+    struct QueueNode* next;
+} QueueNode;
+
+typedef struct Queue {
+    QueueNode *head, *tail;
+} Queue;
+
+void queue_init(Queue* q) {
+    q->head = q->tail = NULL;
+}
+
+void queue_enqueue(Queue* q, int data) {
+    QueueNode* node = (QueueNode*)malloc(sizeof(QueueNode));
+    node->data = data;
+    node->next = NULL;
+
+    if (q->tail == NULL) {
+        q->head = q->tail = node;
+    } else {
+        q->tail->next = node;
+        q->tail = node;
+    }
+}
+
+int queue_dequeue(Queue* q) {
+    if (!q->head) return -1;
+    QueueNode* temp = q->head;
+    int data = temp->data;
+    q->head = q->head->next;
+    if (q->head == NULL) q->tail = NULL;
+    free(temp);
+    return data;
+}
+
+int queue_isEmpty(Queue* q) {
+    return q->head == NULL;
+}
+
+// ============ BST MODULE ============
+
+typedef struct TreeNode {
+    int data;
+    struct TreeNode *left, *right;
+} TreeNode;
+
+TreeNode* bst_createNode(int data) {
+    TreeNode* node = (TreeNode*)malloc(sizeof(TreeNode));
+    node->data = data;
+    node->left = node->right = NULL;
+    return node;
+}
+
+TreeNode* bst_insert(TreeNode* root, int data) {
+    if (root == NULL) return bst_createNode(data);
+
+    if (data < root->data)
+        root->left = bst_insert(root->left, data);
+    else if (data > root->data)
+        root->right = bst_insert(root->right, data);
+
+    return root;
+}
+
+void bst_inorder(TreeNode* root) {
+    if (root) {
+        bst_inorder(root->left);
+        printf("%d ", root->data);
+        bst_inorder(root->right);
+    }
+}
+
+// ============ MAIN DEMONSTRATION ============
+
+int main() {
+    printf("=== Data Structures Library Demo ===\n\n");
+
+    // Test Linked List
+    printf("--- LINKED LIST ---\n");
+    ListNode* list = NULL;
+    list_insert(&list, 3);
+    list_insert(&list, 2);
+    list_insert(&list, 1);
+    list_display(list);
+
+    // Test Stack
+    printf("\n--- STACK (LIFO) ---\n");
+    Stack stack;
+    stack_init(&stack);
+    printf("Pushing: 10, 20, 30\n");
+    stack_push(&stack, 10);
+    stack_push(&stack, 20);
+    stack_push(&stack, 30);
+    printf("Popping: %d, %d, %d\n",
+           stack_pop(&stack),
+           stack_pop(&stack),
+           stack_pop(&stack));
+
+    // Test Queue
+    printf("\n--- QUEUE (FIFO) ---\n");
+    Queue queue;
+    queue_init(&queue);
+    printf("Enqueuing: 100, 200, 300\n");
+    queue_enqueue(&queue, 100);
+    queue_enqueue(&queue, 200);
+    queue_enqueue(&queue, 300);
+    printf("Dequeuing: %d, %d, %d\n",
+           queue_dequeue(&queue),
+           queue_dequeue(&queue),
+           queue_dequeue(&queue));
+
+    // Test BST
+    printf("\n--- BINARY SEARCH TREE ---\n");
+    TreeNode* bst = NULL;
+    printf("Inserting: 5, 3, 7, 2, 4, 6, 8\n");
+    bst = bst_insert(bst, 5);
+    bst = bst_insert(bst, 3);
+    bst = bst_insert(bst, 7);
+    bst = bst_insert(bst, 2);
+    bst = bst_insert(bst, 4);
+    bst = bst_insert(bst, 6);
+    bst = bst_insert(bst, 8);
+    printf("Inorder traversal: ");
+    bst_inorder(bst);
+    printf("\n");
+
+    printf("\n=== All Data Structures Tested Successfully! ===\n");
+
+    return 0;
+}
+
+/*
+ * MAKEFILE EXAMPLE:
+ *
+ * CC = gcc
+ * CFLAGS = -Wall -Wextra -std=c99
+ *
+ * all: program
+ *
+ * program: main.o linkedlist.o stack.o queue.o bst.o
+ *     $(CC) $(CFLAGS) -o program main.o linkedlist.o stack.o queue.o bst.o
+ *
+ * main.o: main.c linkedlist.h stack.h queue.h bst.h
+ *     $(CC) $(CFLAGS) -c main.c
+ *
+ * linkedlist.o: linkedlist.c linkedlist.h
+ *     $(CC) $(CFLAGS) -c linkedlist.c
+ *
+ * stack.o: stack.c stack.h
+ *     $(CC) $(CFLAGS) -c stack.c
+ *
+ * queue.o: queue.c queue.h
+ *     $(CC) $(CFLAGS) -c queue.c
+ *
+ * bst.o: bst.c bst.h
+ *     $(CC) $(CFLAGS) -c bst.c
+ *
+ * clean:
+ *     rm -f *.o program
+ */</textarea>
+                                </div>
+                                <div class="playground-output">
+                                    <div class="output-header">📤 Output</div>
+                                    <div class="output-content">
+                                        <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="solution-key-concepts">
+                                <h5>🔑 Key Concepts:</h5>
+                                <ul>
+                                    <li><strong>Modular design:</strong> Each data structure is a separate module</li>
+                                    <li><strong>Include guards:</strong> Prevent multiple inclusion (#ifndef, #define, #endif)</li>
+                                    <li><strong>Header files:</strong> Declarations and documentation</li>
+                                    <li><strong>Implementation files:</strong> Function definitions</li>
+                                    <li><strong>Makefile:</strong> Automates compilation with dependencies</li>
+                                    <li><strong>Library structure:</strong> Reusable code organized by functionality</li>
+                                    <li><strong>Professional practices:</strong> Error handling, documentation, consistent naming</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Memory Management Best Practices -->
+        <section class="content-card">
+            <h2>Memory Management Best Practices</h2>
+
+            <h3>Golden Rules</h3>
+            <ul>
+                <li><strong>Always check malloc():</strong> <code>if (ptr == NULL) { /* handle error */ }</code></li>
+                <li><strong>Free what you allocate:</strong> Every malloc() needs a free()</li>
+                <li><strong>Set to NULL after freeing:</strong> <code>free(ptr); ptr = NULL;</code></li>
+                <li><strong>Don't use after freeing:</strong> Accessing freed memory is undefined behavior</li>
+                <li><strong>Free in reverse order:</strong> Free child nodes before parent nodes</li>
+            </ul>
+
+            <h3>Compilation & Debugging Commands</h3>
+            <ul>
+                <li><strong>Basic compile:</strong> <code>gcc -Wall -Wextra -g program.c -o program</code></li>
+                <li><strong>With sanitizers:</strong> <code>gcc -g -fsanitize=address program.c -o program</code></li>
+                <li><strong>Check memory leaks:</strong> <code>valgrind --leak-check=full ./program</code></li>
+                <li><strong>GDB debugging:</strong> <code>gdb ./program</code></li>
+            </ul>
+
+            <h3>Common Memory Errors to Avoid</h3>
+            <ul>
+                <li><strong>Memory leak:</strong> Forgetting to free allocated memory</li>
+                <li><strong>Dangling pointer:</strong> Using a pointer after freeing it</li>
+                <li><strong>Double free:</strong> Calling free() twice on same pointer</li>
+                <li><strong>Invalid access:</strong> Accessing memory outside allocated bounds</li>
+                <li><strong>Lost reference:</strong> Losing the head pointer before freeing list</li>
+            </ul>
+        </section>
+
+        <!-- Tips Section -->
+        <section class="content-card">
+            <h2>Tips for Success</h2>
+
+            <h3>Before You Code</h3>
+            <ul>
+                <li>Draw the data structure on paper first</li>
+                <li>Trace through operations manually with a small example</li>
+                <li>Identify edge cases: empty structure, single element, etc.</li>
+                <li>Plan your memory allocation and deallocation strategy</li>
+            </ul>
+
+            <h3>While Coding</h3>
+            <ul>
+                <li>Start with helper functions (createNode, isEmpty, etc.)</li>
+                <li>Test each function individually before combining</li>
+                <li>Use printf debugging to trace pointer values</li>
+                <li>Check for NULL pointers before dereferencing</li>
+                <li>Add comments explaining complex pointer manipulations</li>
+            </ul>
+
+            <h3>Testing Strategy</h3>
+            <ul>
+                <li><strong>Unit test:</strong> Test each function with simple inputs</li>
+                <li><strong>Edge cases:</strong> Empty structure, single element, full structure</li>
+                <li><strong>Stress test:</strong> Large data sets (1000+ elements)</li>
+                <li><strong>Memory test:</strong> Run valgrind on all test cases</li>
+                <li><strong>Visual verification:</strong> Print structure after each operation</li>
+            </ul>
+
+            <h3>Debugging Pointer Issues</h3>
+            <ul>
+                <li>Print pointer addresses to track where they point: <code>printf("%p\n", (void*)ptr)</code></li>
+                <li>Use assert() to verify assumptions: <code>assert(head != NULL)</code></li>
+                <li>Draw diagrams showing pointer connections before and after operations</li>
+                <li>Use GDB to step through code and inspect pointer values</li>
+            </ul>
+        </section>
+
+        <!-- Performance Analysis -->
+        <section class="content-card">
+            <h2>Time Complexity Comparison</h2>
+
+            <h3>Linked List Operations</h3>
+            <ul>
+                <li>Insert at beginning: O(1)</li>
+                <li>Insert at end: O(n) without tail pointer, O(1) with tail</li>
+                <li>Delete: O(n) - must search first</li>
+                <li>Search: O(n)</li>
+                <li>Access by index: O(n)</li>
+            </ul>
+
+            <h3>Stack Operations</h3>
+            <ul>
+                <li>Push: O(1)</li>
+                <li>Pop: O(1)</li>
+                <li>Peek: O(1)</li>
+                <li>All operations are constant time!</li>
+            </ul>
+
+            <h3>Queue Operations</h3>
+            <ul>
+                <li>Enqueue: O(1) with tail pointer</li>
+                <li>Dequeue: O(1)</li>
+                <li>Front: O(1)</li>
+                <li>All operations are constant time with proper implementation!</li>
+            </ul>
+
+            <h3>Binary Search Tree Operations (Average Case)</h3>
+            <ul>
+                <li>Insert: O(log n)</li>
+                <li>Search: O(log n)</li>
+                <li>Delete: O(log n)</li>
+                <li>Traversal: O(n) - must visit all nodes</li>
+                <li><strong>Note:</strong> Worst case (unbalanced tree) is O(n) for insert/search/delete</li>
+            </ul>
+        </section>
+
+        <!-- Next Steps -->
+        <section class="content-card">
+            <h2>Next Steps</h2>
+
+            <p>After completing these exercises:</p>
+
+            <ul>
+                <li>
+                    <strong><a href="quiz.html">Take the Quiz</a>:</strong>
+                    Test your understanding with comprehensive questions on all data structures
+                </li>
+                <li>
+                    <strong><a href="theory.html">Review Theory</a>:</strong>
+                    Revisit concepts and see visual demonstrations
+                </li>
+                <li>
+                    <strong><a href="examples.html">Study Examples</a>:</strong>
+                    Review complete working implementations
+                </li>
+                <li>
+                    <strong>Challenge Yourself:</strong>
+                    Try implementing additional structures like heaps, hash tables, or AVL trees
+                </li>
+            </ul>
+        </section>
+    </div>
+
+    <script>
+        // Store for editors and original code
+        const editors = {};
+        const originalCode = {};
+
+        // Toggle solution visibility
+        function toggleSolution(exerciseNum) {
+            const content = document.getElementById(`solution-${exerciseNum}`);
+            const btn = document.getElementById(`btn-${exerciseNum}`);
+
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                btn.textContent = '👁️ Reveal Solution';
+            } else {
+                content.classList.add('active');
+                btn.textContent = '🙈 Hide Solution';
+
+                // Initialize editor if it exists and hasn't been initialized
+                const playgroundId = `playground${exerciseNum}`;
+                const textareaId = `editor${exerciseNum}`;
+                if (document.getElementById(textareaId) && !editors[playgroundId]) {
+                    initEditor(playgroundId, textareaId);
+                }
+            }
+        }
+
+        // Initialize CodeMirror editor
+        function initEditor(id, textareaId) {
+            const textarea = document.getElementById(textareaId);
+            if (!textarea) return null;
+
+            originalCode[id] = textarea.value;
+
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: 'text/x-csrc',
+                theme: 'material-ocean',
+                lineNumbers: true,
+                indentUnit: 4,
+                tabSize: 4,
+                indentWithTabs: false,
+                lineWrapping: true,
+                matchBrackets: true,
+                autoCloseBrackets: true
+            });
+
+            editors[id] = editor;
+            return editor;
+        }
+
+        // Run code via Piston API
+        async function runCode(playgroundId) {
+            const editor = editors[playgroundId];
+            if (!editor) {
+                console.error('Editor not initialized for', playgroundId);
+                return;
+            }
+
+            const code = editor.getValue();
+            const outputDiv = document.querySelector(`#${playgroundId} .output-text`);
+            const runBtn = document.querySelector(`#${playgroundId} .run-btn`);
+            const loadingId = playgroundId.replace('playground', 'loading');
+            const loadingIndicator = document.getElementById(loadingId);
+
+            runBtn.disabled = true;
+            loadingIndicator.classList.add('active');
+            outputDiv.className = 'output-text output-info';
+            outputDiv.textContent = 'Compiling and executing your code...';
+
+            try {
+                const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        language: 'c',
+                        version: '10.2.0',
+                        files: [{
+                            name: 'main.c',
+                            content: code
+                        }],
+                        stdin: '',
+                        args: [],
+                        compile_timeout: 10000,
+                        run_timeout: 3000,
+                        compile_memory_limit: -1,
+                        run_memory_limit: -1
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.compile && result.compile.code !== 0) {
+                    outputDiv.className = 'output-text output-error';
+                    outputDiv.innerHTML = `<div class="output-info">❌ Compilation Error:</div>${escapeHtml(result.compile.stderr || result.compile.output)}`;
+                } else if (result.run) {
+                    if (result.run.code === 0) {
+                        outputDiv.className = 'output-text output-success';
+                        const output = result.run.stdout || result.run.output || '(no output)';
+                        outputDiv.innerHTML = `<div class="output-info">✅ Executed successfully:</div>${escapeHtml(output)}`;
+                    } else {
+                        outputDiv.className = 'output-text output-error';
+                        const error = result.run.stderr || result.run.output || 'Runtime error';
+                        outputDiv.innerHTML = `<div class="output-info">❌ Runtime Error (exit code ${result.run.code}):</div>${escapeHtml(error)}`;
+                    }
+                } else {
+                    outputDiv.className = 'output-text output-error';
+                    outputDiv.textContent = 'Error: Unable to execute code. Please try again.';
+                }
+
+            } catch (error) {
+                outputDiv.className = 'output-text output-error';
+                outputDiv.innerHTML = `<div class="output-info">❌ Error:</div>Failed to connect to compilation service. Please check your internet connection and try again.`;
+                console.error('Piston API error:', error);
+            } finally {
+                runBtn.disabled = false;
+                loadingIndicator.classList.remove('active');
+            }
+        }
+
+        // Reset code to original
+        function resetCode(playgroundId) {
+            const editor = editors[playgroundId];
+            const outputDiv = document.querySelector(`#${playgroundId} .output-text`);
+
+            if (editor) {
+                editor.setValue(originalCode[playgroundId]);
+                outputDiv.className = 'output-text output-placeholder';
+                outputDiv.textContent = 'Click "Run Code" to compile and execute...';
+            }
+        }
+
+        // Escape HTML for safe display
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
