@@ -1,0 +1,182 @@
+# Test Cases for Exercise 1: Basic Linked List Operations
+
+## Test Case 1: Normal Execution (provided in main)
+### Description:
+Tests all basic operations: add_end, add_beginning, remove_by_value, print_list, free_list
+
+### Input:
+- Create initial node with value 5
+- Add 10 to end
+- Add 3 to beginning
+- Add 7 to end
+- Remove value 10
+
+### Expected Output:
+```
+Initial list:
+3 -> 5 -> 10 -> 7 -> NULL
+
+After removing 10:
+3 -> 5 -> 7 -> NULL
+
+All memory freed successfully.
+```
+
+---
+
+## Test Case 2: Remove First Element
+### Modification to main():
+After creating the initial list (3 -> 5 -> 10 -> 7), remove the first element:
+```c
+remove_by_value(&head, 3);
+printf("\nAfter removing first element (3):\n");
+print_list(head);
+```
+
+### Expected Output:
+```
+After removing first element (3):
+5 -> 10 -> 7 -> NULL
+```
+
+---
+
+## Test Case 3: Remove Last Element
+### Modification to main():
+After creating the initial list (3 -> 5 -> 10 -> 7), remove the last element:
+```c
+remove_by_value(&head, 7);
+printf("\nAfter removing last element (7):\n");
+print_list(head);
+```
+
+### Expected Output:
+```
+After removing last element (7):
+3 -> 5 -> 10 -> NULL
+```
+
+---
+
+## Test Case 4: Remove Non-Existent Element
+### Modification to main():
+Try to remove a value that doesn't exist in the list:
+```c
+remove_by_value(&head, 99);
+printf("\nAfter attempting to remove non-existent value (99):\n");
+print_list(head);
+```
+
+### Expected Output:
+```
+Value 99 not found in list
+
+After attempting to remove non-existent value (99):
+3 -> 5 -> 10 -> 7 -> NULL
+```
+
+---
+
+## Test Case 5: Single Element List
+### Modification to main():
+Create a list with just one element and test operations:
+```c
+node_t *head = malloc(sizeof(node_t));
+head->val = 42;
+head->next = NULL;
+
+printf("Single element list:\n");
+print_list(head);
+
+remove_by_value(&head, 42);
+printf("\nAfter removing the only element:\n");
+if (head == NULL) {
+    printf("List is now empty (head is NULL)\n");
+} else {
+    print_list(head);
+}
+```
+
+### Expected Output:
+```
+Single element list:
+42 -> NULL
+
+After removing the only element:
+List is now empty (head is NULL)
+```
+
+---
+
+## Test Case 6: Building List Only with add_beginning
+### Modification to main():
+Build a list using only add_beginning:
+```c
+node_t *head = malloc(sizeof(node_t));
+head->val = 5;
+head->next = NULL;
+
+add_beginning(&head, 4);
+add_beginning(&head, 3);
+add_beginning(&head, 2);
+add_beginning(&head, 1);
+
+printf("List built with add_beginning:\n");
+print_list(head);
+```
+
+### Expected Output:
+```
+List built with add_beginning:
+1 -> 2 -> 3 -> 4 -> 5 -> NULL
+```
+
+---
+
+## Test Case 7: Building List Only with add_end
+### Modification to main():
+Build a list using only add_end:
+```c
+node_t *head = malloc(sizeof(node_t));
+head->val = 1;
+head->next = NULL;
+
+add_end(head, 2);
+add_end(head, 3);
+add_end(head, 4);
+add_end(head, 5);
+
+printf("List built with add_end:\n");
+print_list(head);
+```
+
+### Expected Output:
+```
+List built with add_end:
+1 -> 2 -> 3 -> 4 -> 5 -> NULL
+```
+
+---
+
+## Memory Leak Testing
+### Using Valgrind:
+```bash
+make valgrind-solution
+```
+
+### Expected Valgrind Output (no leaks):
+```
+HEAP SUMMARY:
+    in use at exit: 0 bytes in 0 blocks
+  total heap usage: X allocs, X frees, Y bytes allocated
+
+All heap blocks were freed -- no leaks are possible
+```
+
+---
+
+## Notes for Testing:
+1. All test cases should be run with valgrind to ensure no memory leaks
+2. The solution should handle edge cases gracefully (empty list, single element, etc.)
+3. Each malloc should be checked for NULL to ensure memory was allocated successfully
+4. Always free all allocated memory before the program exits

@@ -1,0 +1,346 @@
+# Test Cases for Exercise 3: Queue Implementation (FIFO)
+
+## Test Case 1: Normal Execution (provided in main)
+### Description:
+Tests all basic queue operations: enqueue, dequeue, peek, print, free
+
+### Input:
+- Enqueue 10, 20, 30, 40, 50
+- Dequeue twice
+- Peek
+- Print remaining queue
+
+### Expected Output:
+```
+Enqueuing: 10
+Enqueuing: 20
+Enqueuing: 30
+Enqueuing: 40
+Enqueuing: 50
+
+Queue contents (front to back):
+10 <- 20 <- 30 <- 40 <- 50
+
+Dequeued: 10
+Dequeued: 20
+
+Front element (peek): 30
+
+Queue contents after dequeuing:
+30 <- 40 <- 50
+
+All memory freed successfully.
+```
+
+---
+
+## Test Case 2: Dequeue from Empty Queue
+### Modification to main():
+Try to dequeue from an empty queue:
+```c
+queue_t q;
+init_queue(&q);
+
+printf("Attempting to dequeue from empty queue:\n");
+int value = dequeue(&q);
+printf("Returned value: %d\n", value);
+```
+
+### Expected Output:
+```
+Attempting to dequeue from empty queue:
+Queue underflow: Cannot dequeue from empty queue
+Returned value: -1
+```
+
+---
+
+## Test Case 3: Peek at Empty Queue
+### Modification to main():
+Try to peek at an empty queue:
+```c
+queue_t q;
+init_queue(&q);
+
+printf("Attempting to peek at empty queue:\n");
+int value = peek(&q);
+printf("Returned value: %d\n", value);
+```
+
+### Expected Output:
+```
+Attempting to peek at empty queue:
+Queue is empty: Cannot peek
+Returned value: -1
+```
+
+---
+
+## Test Case 4: Single Element Queue
+### Modification to main():
+Test operations on a queue with just one element:
+```c
+queue_t q;
+init_queue(&q);
+
+enqueue(&q, 42);
+printf("Enqueued 42\n");
+printf("Queue: ");
+print_queue(&q);
+
+printf("\nPeek: %d\n", peek(&q));
+printf("Is empty? %d\n", is_empty(&q));
+
+printf("\nDequeuing: %d\n", dequeue(&q));
+printf("Is empty? %d\n", is_empty(&q));
+
+// Verify tail was also set to NULL
+printf("\nTrying to peek after dequeuing last element:\n");
+peek(&q);
+```
+
+### Expected Output:
+```
+Enqueued 42
+Queue: 42
+
+Peek: 42
+Is empty? 0
+
+Dequeuing: 42
+Is empty? 1
+
+Trying to peek after dequeuing last element:
+Queue is empty: Cannot peek
+```
+
+---
+
+## Test Case 5: FIFO Verification
+### Modification to main():
+Verify that queue follows FIFO order:
+```c
+queue_t q;
+init_queue(&q);
+
+// Enqueue in order: 1, 2, 3, 4, 5
+for (int i = 1; i <= 5; i++) {
+    enqueue(&q, i);
+    printf("Enqueued: %d\n", i);
+}
+
+printf("\nDequeuing all elements (should be same order):\n");
+while (!is_empty(&q)) {
+    printf("Dequeued: %d\n", dequeue(&q));
+}
+```
+
+### Expected Output:
+```
+Enqueued: 1
+Enqueued: 2
+Enqueued: 3
+Enqueued: 4
+Enqueued: 5
+
+Dequeuing all elements (should be same order):
+Dequeued: 1
+Dequeued: 2
+Dequeued: 3
+Dequeued: 4
+Dequeued: 5
+```
+
+---
+
+## Test Case 6: Alternating Enqueue and Dequeue
+### Modification to main():
+Test alternating enqueue and dequeue operations:
+```c
+queue_t q;
+init_queue(&q);
+
+enqueue(&q, 10);
+printf("Enqueued 10\n");
+enqueue(&q, 20);
+printf("Enqueued 20\n");
+printf("Dequeued: %d\n", dequeue(&q));
+enqueue(&q, 30);
+printf("Enqueued 30\n");
+printf("Dequeued: %d\n", dequeue(&q));
+enqueue(&q, 40);
+printf("Enqueued 40\n");
+
+printf("\nFinal queue:\n");
+print_queue(&q);
+```
+
+### Expected Output:
+```
+Enqueued 10
+Enqueued 20
+Dequeued: 10
+Enqueued 30
+Dequeued: 20
+Enqueued 40
+
+Final queue:
+30 <- 40
+```
+
+---
+
+## Test Case 7: Enqueue After Emptying Queue
+### Modification to main():
+Verify that queue works correctly after being completely emptied:
+```c
+queue_t q;
+init_queue(&q);
+
+// Add and remove all elements
+enqueue(&q, 100);
+enqueue(&q, 200);
+dequeue(&q);
+dequeue(&q);
+
+printf("Queue after emptying:\n");
+print_queue(&q);
+
+// Add elements again
+printf("\nAdding new elements:\n");
+enqueue(&q, 300);
+enqueue(&q, 400);
+printf("Queue after adding new elements:\n");
+print_queue(&q);
+```
+
+### Expected Output:
+```
+Queue after emptying:
+Queue is empty
+
+Adding new elements:
+Queue after adding new elements:
+300 <- 400
+```
+
+---
+
+## Test Case 8: Peek Multiple Times
+### Modification to main():
+Verify that peek doesn't modify the queue:
+```c
+queue_t q;
+init_queue(&q);
+
+enqueue(&q, 100);
+enqueue(&q, 200);
+enqueue(&q, 300);
+
+printf("Peek #1: %d\n", peek(&q));
+printf("Peek #2: %d\n", peek(&q));
+printf("Peek #3: %d\n", peek(&q));
+
+printf("\nQueue contents (should be unchanged):\n");
+print_queue(&q);
+```
+
+### Expected Output:
+```
+Peek #1: 100
+Peek #2: 100
+Peek #3: 100
+
+Queue contents (should be unchanged):
+100 <- 200 <- 300
+```
+
+---
+
+## Test Case 9: Large Queue
+### Modification to main():
+Test with a larger number of elements:
+```c
+queue_t q;
+init_queue(&q);
+
+printf("Enqueuing 10 elements:\n");
+for (int i = 1; i <= 10; i++) {
+    enqueue(&q, i * 10);
+}
+print_queue(&q);
+
+printf("\nDequeuing 5 elements:\n");
+for (int i = 0; i < 5; i++) {
+    printf("Dequeued: %d\n", dequeue(&q));
+}
+
+printf("\nRemaining queue:\n");
+print_queue(&q);
+```
+
+### Expected Output:
+```
+Enqueuing 10 elements:
+10 <- 20 <- 30 <- 40 <- 50 <- 60 <- 70 <- 80 <- 90 <- 100
+
+Dequeuing 5 elements:
+Dequeued: 10
+Dequeued: 20
+Dequeued: 30
+Dequeued: 40
+Dequeued: 50
+
+Remaining queue:
+60 <- 70 <- 80 <- 90 <- 100
+```
+
+---
+
+## Memory Leak Testing
+### Using Valgrind:
+```bash
+make valgrind-solution
+```
+
+### Expected Valgrind Output (no leaks):
+```
+HEAP SUMMARY:
+    in use at exit: 0 bytes in 0 blocks
+  total heap usage: X allocs, X frees, Y bytes allocated
+
+All heap blocks were freed -- no leaks are possible
+```
+
+---
+
+## Performance Notes:
+1. All operations (enqueue, dequeue, peek, isEmpty) should be O(1) - constant time
+2. Only print_queue is O(n) where n is the number of elements
+3. Having both head and tail pointers is crucial for O(1) enqueue
+
+---
+
+## Common Mistakes to Avoid:
+1. Forgetting to update tail pointer when enqueuing
+2. Not handling the special case of single element queue
+3. Not setting tail to NULL when dequeuing the last element
+4. Not checking for empty queue before dequeue/peek
+5. Not freeing all nodes in free_queue
+6. Forgetting to reset both head and tail after freeing all nodes
+
+---
+
+## Comparison: Stack vs Queue Behavior
+
+### Stack (LIFO):
+```
+Push: 1, 2, 3, 4, 5
+Pop all: 5, 4, 3, 2, 1 (reverse order)
+```
+
+### Queue (FIFO):
+```
+Enqueue: 1, 2, 3, 4, 5
+Dequeue all: 1, 2, 3, 4, 5 (same order)
+```

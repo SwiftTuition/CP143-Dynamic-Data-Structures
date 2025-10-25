@@ -1,0 +1,285 @@
+# Test Cases for Exercise 2: Stack Implementation (LIFO)
+
+## Test Case 1: Normal Execution (provided in main)
+### Description:
+Tests all basic stack operations: push, pop, peek, print, free
+
+### Input:
+- Push 10, 20, 30, 40, 50
+- Pop twice
+- Peek
+- Print remaining stack
+
+### Expected Output:
+```
+Pushing: 10
+Pushing: 20
+Pushing: 30
+Pushing: 40
+Pushing: 50
+
+Stack contents (top to bottom):
+50
+40
+30
+20
+10
+
+Popped: 50
+Popped: 40
+
+Top element (peek): 30
+
+Stack contents after popping:
+30
+20
+10
+
+All memory freed successfully.
+```
+
+---
+
+## Test Case 2: Pop from Empty Stack
+### Modification to main():
+Try to pop from an empty stack:
+```c
+stack_node_t *top = NULL;
+
+printf("Attempting to pop from empty stack:\n");
+int value = pop(&top);
+printf("Returned value: %d\n", value);
+```
+
+### Expected Output:
+```
+Attempting to pop from empty stack:
+Stack underflow: Cannot pop from empty stack
+Returned value: -1
+```
+
+---
+
+## Test Case 3: Peek at Empty Stack
+### Modification to main():
+Try to peek at an empty stack:
+```c
+stack_node_t *top = NULL;
+
+printf("Attempting to peek at empty stack:\n");
+int value = peek(top);
+printf("Returned value: %d\n", value);
+```
+
+### Expected Output:
+```
+Attempting to peek at empty stack:
+Stack is empty: Cannot peek
+Returned value: -1
+```
+
+---
+
+## Test Case 4: Push and Pop All Elements
+### Modification to main():
+Push several elements and then pop all of them:
+```c
+stack_node_t *top = NULL;
+
+push(&top, 100);
+push(&top, 200);
+push(&top, 300);
+
+printf("Stack contents:\n");
+print_stack(top);
+
+printf("\nPopping all elements:\n");
+while (!is_empty(top)) {
+    printf("Popped: %d\n", pop(&top));
+}
+
+printf("\nStack after popping all:\n");
+print_stack(top);
+```
+
+### Expected Output:
+```
+Stack contents:
+300
+200
+100
+
+Popping all elements:
+Popped: 300
+Popped: 200
+Popped: 100
+
+Stack after popping all:
+Stack is empty
+```
+
+---
+
+## Test Case 5: Single Element Stack
+### Modification to main():
+Test operations on a stack with just one element:
+```c
+stack_node_t *top = NULL;
+
+push(&top, 42);
+printf("Pushed 42\n");
+printf("Stack: ");
+print_stack(top);
+
+printf("\nPeek: %d\n", peek(top));
+printf("Is empty? %d\n", is_empty(top));
+
+printf("\nPopping: %d\n", pop(&top));
+printf("Is empty? %d\n", is_empty(top));
+```
+
+### Expected Output:
+```
+Pushed 42
+Stack: 42
+
+Peek: 42
+Is empty? 0
+
+Popping: 42
+Is empty? 1
+```
+
+---
+
+## Test Case 6: LIFO Verification
+### Modification to main():
+Verify that stack follows LIFO order:
+```c
+stack_node_t *top = NULL;
+
+// Push in order: 1, 2, 3, 4, 5
+for (int i = 1; i <= 5; i++) {
+    push(&top, i);
+    printf("Pushed: %d\n", i);
+}
+
+printf("\nPopping all elements (should be reverse order):\n");
+while (!is_empty(top)) {
+    printf("Popped: %d\n", pop(&top));
+}
+```
+
+### Expected Output:
+```
+Pushed: 1
+Pushed: 2
+Pushed: 3
+Pushed: 4
+Pushed: 5
+
+Popping all elements (should be reverse order):
+Popped: 5
+Popped: 4
+Popped: 3
+Popped: 2
+Popped: 1
+```
+
+---
+
+## Test Case 7: Alternating Push and Pop
+### Modification to main():
+Test alternating push and pop operations:
+```c
+stack_node_t *top = NULL;
+
+push(&top, 10);
+printf("Pushed 10\n");
+push(&top, 20);
+printf("Pushed 20\n");
+printf("Popped: %d\n", pop(&top));
+push(&top, 30);
+printf("Pushed 30\n");
+printf("Popped: %d\n", pop(&top));
+printf("Popped: %d\n", pop(&top));
+
+printf("\nFinal stack:\n");
+print_stack(top);
+```
+
+### Expected Output:
+```
+Pushed 10
+Pushed 20
+Popped: 20
+Pushed 30
+Popped: 30
+Popped: 10
+
+Final stack:
+Stack is empty
+```
+
+---
+
+## Test Case 8: Peek Multiple Times
+### Modification to main():
+Verify that peek doesn't modify the stack:
+```c
+stack_node_t *top = NULL;
+
+push(&top, 100);
+push(&top, 200);
+
+printf("Peek #1: %d\n", peek(top));
+printf("Peek #2: %d\n", peek(top));
+printf("Peek #3: %d\n", peek(top));
+
+printf("\nStack contents (should be unchanged):\n");
+print_stack(top);
+```
+
+### Expected Output:
+```
+Peek #1: 200
+Peek #2: 200
+Peek #3: 200
+
+Stack contents (should be unchanged):
+200
+100
+```
+
+---
+
+## Memory Leak Testing
+### Using Valgrind:
+```bash
+make valgrind-solution
+```
+
+### Expected Valgrind Output (no leaks):
+```
+HEAP SUMMARY:
+    in use at exit: 0 bytes in 0 blocks
+  total heap usage: X allocs, X frees, Y bytes allocated
+
+All heap blocks were freed -- no leaks are possible
+```
+
+---
+
+## Performance Notes:
+1. All operations (push, pop, peek, isEmpty) should be O(1) - constant time
+2. Only print_stack is O(n) where n is the number of elements
+3. Stack operations should never need to traverse the entire structure
+
+---
+
+## Common Mistakes to Avoid:
+1. Forgetting to update the top pointer after push/pop
+2. Not checking for empty stack before pop/peek
+3. Not freeing the popped node
+4. Memory leaks when freeing the entire stack
+5. Dereferencing NULL pointers

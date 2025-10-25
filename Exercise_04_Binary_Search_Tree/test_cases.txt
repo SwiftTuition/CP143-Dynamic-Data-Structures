@@ -1,0 +1,409 @@
+# Test Cases for Exercise 4: Binary Search Tree (BST)
+
+## Test Case 1: Normal Execution (provided in main)
+### Description:
+Tests all basic BST operations: insert, all three traversals, search
+
+### Input:
+- Insert: 47, 25, 77, 11, 43, 65, 93
+- Display all three traversals
+- Search for 43 (exists) and 100 (doesn't exist)
+
+### Expected Output:
+```
+Inserting: 47
+Inserting: 25
+Inserting: 77
+Inserting: 11
+Inserting: 43
+Inserting: 65
+Inserting: 93
+
+Inorder traversal (sorted):
+11 25 43 47 65 77 93
+
+Preorder traversal:
+47 25 11 43 77 65 93
+
+Postorder traversal:
+11 43 25 65 93 77 47
+
+Searching for 43: Found
+Searching for 100: Not found
+
+All memory freed successfully.
+```
+
+### Tree Structure:
+```
+        47
+       /  \
+     25    77
+    /  \   /  \
+   11  43 65  93
+```
+
+---
+
+## Test Case 2: Single Node Tree
+### Modification to main():
+Test operations on a tree with just one node:
+```c
+tree_node_t *root = NULL;
+
+root = insert(root, 50);
+printf("Tree with single node:\n");
+printf("Inorder: ");
+inorder_traversal(root);
+printf("\n");
+
+printf("Searching for 50: %s\n", search(root, 50) ? "Found" : "Not found");
+printf("Searching for 25: %s\n", search(root, 25) ? "Found" : "Not found");
+
+free_tree(root);
+```
+
+### Expected Output:
+```
+Tree with single node:
+Inorder: 50
+
+Searching for 50: Found
+Searching for 25: Not found
+```
+
+---
+
+## Test Case 3: Left-Skewed Tree
+### Modification to main():
+Insert values in descending order to create a left-skewed tree:
+```c
+tree_node_t *root = NULL;
+
+// Insert in descending order: 50, 40, 30, 20, 10
+root = insert(root, 50);
+root = insert(root, 40);
+root = insert(root, 30);
+root = insert(root, 20);
+root = insert(root, 10);
+
+printf("Inorder (should be sorted): ");
+inorder_traversal(root);
+printf("\n");
+
+printf("Preorder: ");
+preorder_traversal(root);
+printf("\n");
+
+free_tree(root);
+```
+
+### Expected Output:
+```
+Inorder (should be sorted): 10 20 30 40 50
+Preorder: 50 40 30 20 10
+```
+
+### Tree Structure (Left-Skewed):
+```
+50
+ \
+  40
+   \
+    30
+     \
+      20
+       \
+        10
+```
+
+---
+
+## Test Case 4: Right-Skewed Tree
+### Modification to main():
+Insert values in ascending order to create a right-skewed tree:
+```c
+tree_node_t *root = NULL;
+
+// Insert in ascending order: 10, 20, 30, 40, 50
+root = insert(root, 10);
+root = insert(root, 20);
+root = insert(root, 30);
+root = insert(root, 40);
+root = insert(root, 50);
+
+printf("Inorder (should be sorted): ");
+inorder_traversal(root);
+printf("\n");
+
+printf("Preorder: ");
+preorder_traversal(root);
+printf("\n");
+
+free_tree(root);
+```
+
+### Expected Output:
+```
+Inorder (should be sorted): 10 20 30 40 50
+Preorder: 10 20 30 40 50
+```
+
+### Tree Structure (Right-Skewed):
+```
+10
+ \
+  20
+   \
+    30
+     \
+      40
+       \
+        50
+```
+
+---
+
+## Test Case 5: Search in Empty Tree
+### Modification to main():
+Search in an empty tree:
+```c
+tree_node_t *root = NULL;
+
+printf("Searching in empty tree: %s\n", search(root, 42) ? "Found" : "Not found");
+```
+
+### Expected Output:
+```
+Searching in empty tree: Not found
+```
+
+---
+
+## Test Case 6: Balanced Tree
+### Modification to main():
+Create a more balanced tree:
+```c
+tree_node_t *root = NULL;
+
+// Insert to create balanced tree: 50, 25, 75, 12, 37, 62, 87
+root = insert(root, 50);
+root = insert(root, 25);
+root = insert(root, 75);
+root = insert(root, 12);
+root = insert(root, 37);
+root = insert(root, 62);
+root = insert(root, 87);
+
+printf("Inorder: ");
+inorder_traversal(root);
+printf("\n");
+
+printf("Preorder: ");
+preorder_traversal(root);
+printf("\n");
+
+printf("Postorder: ");
+postorder_traversal(root);
+printf("\n");
+
+free_tree(root);
+```
+
+### Expected Output:
+```
+Inorder: 12 25 37 50 62 75 87
+Preorder: 50 25 12 37 75 62 87
+Postorder: 12 37 25 62 87 75 50
+```
+
+### Tree Structure:
+```
+        50
+       /  \
+     25    75
+    /  \   /  \
+   12  37 62  87
+```
+
+---
+
+## Test Case 7: Verify Inorder Gives Sorted Output
+### Modification to main():
+Insert random values and verify inorder gives sorted output:
+```c
+tree_node_t *root = NULL;
+
+// Insert in random order
+int values[] = {64, 34, 25, 12, 22, 11, 90};
+int n = 7;
+
+printf("Inserting in order: ");
+for (int i = 0; i < n; i++) {
+    printf("%d ", values[i]);
+    root = insert(root, values[i]);
+}
+printf("\n");
+
+printf("Inorder (sorted): ");
+inorder_traversal(root);
+printf("\n");
+
+free_tree(root);
+```
+
+### Expected Output:
+```
+Inserting in order: 64 34 25 12 22 11 90
+Inorder (sorted): 11 12 22 25 34 64 90
+```
+
+---
+
+## Test Case 8: Search All Values
+### Modification to main():
+Insert several values and search for each one:
+```c
+tree_node_t *root = NULL;
+
+int values[] = {50, 30, 70, 20, 40, 60, 80};
+int n = 7;
+
+for (int i = 0; i < n; i++) {
+    root = insert(root, values[i]);
+}
+
+printf("Searching for all inserted values:\n");
+for (int i = 0; i < n; i++) {
+    printf("%d: %s\n", values[i], search(root, values[i]) ? "Found" : "Not found");
+}
+
+printf("\nSearching for non-existent values:\n");
+int missing[] = {10, 25, 45, 90};
+for (int i = 0; i < 4; i++) {
+    printf("%d: %s\n", missing[i], search(root, missing[i]) ? "Found" : "Not found");
+}
+
+free_tree(root);
+```
+
+### Expected Output:
+```
+Searching for all inserted values:
+50: Found
+30: Found
+70: Found
+20: Found
+40: Found
+60: Found
+80: Found
+
+Searching for non-existent values:
+10: Not found
+25: Not found
+45: Not found
+90: Not found
+```
+
+---
+
+## Test Case 9: Large Tree
+### Modification to main():
+Test with a larger number of nodes:
+```c
+tree_node_t *root = NULL;
+
+// Insert 15 values
+int values[] = {50, 25, 75, 12, 37, 62, 87, 6, 18, 31, 43, 56, 68, 81, 93};
+int n = 15;
+
+for (int i = 0; i < n; i++) {
+    root = insert(root, values[i]);
+}
+
+printf("Inorder traversal of 15-node tree:\n");
+inorder_traversal(root);
+printf("\n");
+
+printf("\nSearching for middle value (50): %s\n", search(root, 50) ? "Found" : "Not found");
+printf("Searching for smallest (6): %s\n", search(root, 6) ? "Found" : "Not found");
+printf("Searching for largest (93): %s\n", search(root, 93) ? "Found" : "Not found");
+
+free_tree(root);
+```
+
+### Expected Output:
+```
+Inorder traversal of 15-node tree:
+6 12 18 25 31 37 43 50 56 62 68 75 81 87 93
+
+Searching for middle value (50): Found
+Searching for smallest (6): Found
+Searching for largest (93): Found
+```
+
+---
+
+## Memory Leak Testing
+### Using Valgrind:
+```bash
+make valgrind-solution
+```
+
+### Expected Valgrind Output (no leaks):
+```
+HEAP SUMMARY:
+    in use at exit: 0 bytes in 0 blocks
+  total heap usage: X allocs, X frees, Y bytes allocated
+
+All heap blocks were freed -- no leaks are possible
+```
+
+---
+
+## Performance Notes:
+1. **Balanced tree**: O(log n) for insert and search
+2. **Skewed tree**: O(n) for insert and search (degrades to linked list)
+3. **Inorder traversal**: Always O(n) - must visit every node
+4. **Free tree**: Must use postorder to avoid accessing freed memory
+
+---
+
+## Understanding Traversals:
+
+### Given tree:
+```
+        47
+       /  \
+     25    77
+    /  \   /  \
+   11  43 65  93
+```
+
+### Inorder (Left-Root-Right):
+- Visit left subtree: 11, 25, 43
+- Visit root: 47
+- Visit right subtree: 65, 77, 93
+- **Result**: 11 25 43 47 65 77 93 (sorted!)
+
+### Preorder (Root-Left-Right):
+- Visit root: 47
+- Visit left subtree: 25, 11, 43
+- Visit right subtree: 77, 65, 93
+- **Result**: 47 25 11 43 77 65 93
+
+### Postorder (Left-Right-Root):
+- Visit left subtree: 11, 43, 25
+- Visit right subtree: 65, 93, 77
+- Visit root: 47
+- **Result**: 11 43 25 65 93 77 47
+
+---
+
+## Common Mistakes to Avoid:
+1. Not returning the modified tree in insert function
+2. Freeing parent before children (causes access to freed memory)
+3. Not handling NULL base case in recursive functions
+4. Forgetting to check malloc return value
+5. Not maintaining BST property (left < root < right)
+6. Memory leaks from not freeing all nodes

@@ -49,6 +49,7 @@ All 15 practice exercises include:
 
 ## 📋 Practice Exercises
 
+### Browser-Based Interactive Exercises (practice.html)
 1. Self-referential Structures
 2. Linked List - Insert at Beginning
 3. Linked List - Complete Implementation
@@ -64,6 +65,24 @@ All 15 practice exercises include:
 13. Floyd's Loop Detection Algorithm
 14. Expression Tree Construction & Evaluation
 15. Multi-File Data Structures Library
+
+### Practical 11-Style Programming Exercises
+**NEW!** Four complete programming exercises matching the format and difficulty of Practical 11 (2024):
+
+- **Exercise 1:** Basic Linked List Operations (Basic, 30-45 min)
+- **Exercise 2:** Stack Implementation - LIFO (Medium, 45-60 min)
+- **Exercise 3:** Queue Implementation - FIFO (Medium, 60-75 min)
+- **Exercise 4:** Binary Search Tree (Hard, 75-90 min)
+
+Each includes:
+- Complete README with learning objectives
+- Starter code with TODO comments
+- Full solution with detailed comments
+- Makefile for easy compilation
+- Comprehensive test cases
+- Valgrind memory leak checking
+
+📚 **[View Exercise Overview](EXERCISES_OVERVIEW.md)** | 🔍 **[Quick Reference Guide](QUICK_REFERENCE.md)**
 
 ## 🎯 Learning Outcomes
 
